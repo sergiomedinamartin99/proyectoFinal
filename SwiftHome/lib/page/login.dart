@@ -12,8 +12,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-late TextEditingController _controladorCorreo = new TextEditingController();
-late TextEditingController _controladorContrasena = new TextEditingController();
+TextEditingController _controladorCorreo = TextEditingController();
+TextEditingController _controladorContrasena = TextEditingController();
 
 class _LoginPageState extends State<LoginPage> {
   @override
@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
 
 Future<bool> validarLogin(String nombreusuario, String contrasenya) async {
   String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlLogin}';
-  final user = {"correo": "${nombreusuario}", "contrasena": "${contrasenya}"};
+  final user = {"correo": nombreusuario, "contrasena": contrasenya};
   NetworkCheck network = NetworkCheck(url, user);
   bool data = await network.fetchData();
   debugPrint("$data");

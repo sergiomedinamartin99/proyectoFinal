@@ -7,7 +7,7 @@ import 'package:swifthome/api/network/network_send_images.dart';
 import 'package:swifthome/api/network/network_insert_data.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({Key? key, required String title}) : super(key: key);
+  const RegistrationPage({super.key, required String title});
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
 }
@@ -28,16 +28,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool? cambioTipoUsuario;
   String? ciudadSeleccionada;
 
-  ScrollController _scrollController = ScrollController();
-  TextEditingController _controllerNombre = TextEditingController();
-  TextEditingController _controllerApellidos = TextEditingController();
-  TextEditingController _controllerCorreo = TextEditingController();
-  TextEditingController _controllerContrasena = TextEditingController();
-  TextEditingController _controllerConfirmarContrasena =
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _controllerNombre = TextEditingController();
+  final TextEditingController _controllerApellidos = TextEditingController();
+  final TextEditingController _controllerCorreo = TextEditingController();
+  final TextEditingController _controllerContrasena = TextEditingController();
+  final TextEditingController _controllerConfirmarContrasena =
       TextEditingController();
-  TextEditingController _controllerEdad = TextEditingController();
-  TextEditingController _controllerTelefono = TextEditingController();
-  TextEditingController _controllerBiografia = TextEditingController();
+  final TextEditingController _controllerEdad = TextEditingController();
+  final TextEditingController _controllerTelefono = TextEditingController();
+  final TextEditingController _controllerBiografia = TextEditingController();
   final _formularioRegistro = GlobalKey<FormState>();
 
   final List<Imagen?> _images =
@@ -49,9 +49,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
   }
 
   Future<void> _pickImage(int index) async {
-    final ImagePicker _picker = ImagePicker();
+    final ImagePicker picker = ImagePicker();
     final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final Uint8List imageBytes = await pickedImage.readAsBytes();
       // Extraer el nombre del archivo e información del tipo
@@ -305,7 +305,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       maxLines: 5,
                     ),
                     _negritaTexto("Imagen de perfil"),
-                    Container(
+                    SizedBox(
                       width: 400,
                       height: 400,
                       child: GridView.builder(
@@ -382,7 +382,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     ciudadSeleccionada.toString(),
                                     _controllerBiografia.text,
                                     _images);
-                            if (comprobar != null && _images.length > 0) {
+                            if (comprobar != null && _images.isNotEmpty) {
                               if (comprobar['status'] == 1) {
                                 mostrarSnackBar(
                                     context, comprobar['mensaje'].toString());

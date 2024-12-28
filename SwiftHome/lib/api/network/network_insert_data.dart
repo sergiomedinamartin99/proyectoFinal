@@ -9,7 +9,7 @@ class NetworkInsertData {
   NetworkInsertData(this.url, this.mapa);
 
   Future<Map<String, dynamic>?> fetchData() async {
-    debugPrint("$url");
+    debugPrint(url);
     debugPrint("$mapa");
     Response response = await post(Uri.parse(url), body: mapa);
     if (response.statusCode == 200) {
