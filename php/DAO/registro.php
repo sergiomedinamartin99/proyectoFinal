@@ -1,8 +1,8 @@
 <?php
 require_once "../Conector/conexion.php";
-//session_start();
-
+$usuarioId = -1;
 function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $telefono, $genero, $buscandoPiso, $biografia, $ciudad) {
+    global $usuarioId;
     try {
         $conexion = getConexion();
         if ($conexion != null) {
@@ -26,8 +26,8 @@ function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $te
             $resultado->bindParam(":ubicacion", $ciudad);
             $resultado->execute();
 
-            //$_SESSION["usuarioId"] = $usuarioId;
-
+             
+            
             return true;
         }
     } catch (Exception $ex) {
@@ -69,14 +69,14 @@ $ciudad = $_POST["ciudad"];
 $biografia = $_POST["biografia"];
 
 $comprobarUsuario = getUsuarioPorCorreo($correo);
+
 if($comprobarUsuario != null){
     echo json_encode(["status" => 0, "mensaje" => "El correo ya está registrado"]);
     return;
 }else{
     $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $telefono, $genero, $buscandoPiso, $ciudad, $biografia);
-
     if ($usuarioRegistrado) {
-        echo json_encode(["status" => 1, "mensaje" => "Usuario registrado"]);
+        echo json_encode(["status" => 1, "mensaje" => "Usuario registrado","usuarioId" => "$usuarioId"]);
     } else {
         echo json_encode(["status" => 0, "mensaje" => "Error al registrar usuario"]);
     }

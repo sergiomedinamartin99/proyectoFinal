@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
 import 'package:swifthome/api/network/network_insert_data.dart';
+import 'package:swifthome/page/home.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key, required String title});
@@ -386,6 +387,36 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               if (comprobar['status'] == 1) {
                                 mostrarSnackBar(
                                     context, comprobar['mensaje'].toString());
+                                Map<String, dynamic>? comprobarImagenes =
+                                    await insertImagenes(
+                                        int.parse(comprobar['usuarioId']),
+                                        _images);
+                                if (comprobarImagenes != null) {
+                                  if (comprobarImagenes['status'] == 1) {
+                                    mostrarSnackBar(
+                                        context,
+                                        comprobarImagenes['mensaje']
+                                            .toString());
+
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePage(
+                                          idPersona:
+                                              int.parse(comprobar['usuarioId']),
+                                        ),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  } else {
+                                    mostrarSnackBar(
+                                        context,
+                                        comprobarImagenes['mensaje']
+                                            .toString());
+                                  }
+                                } else {
+                                  mostrarSnackBar(
+                                      context, "Error al subir las imagenes");
+                                }
                               } else {
                                 mostrarSnackBar(
                                     context, comprobar['mensaje'].toString());
@@ -401,24 +432,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         child: const Text("Registrarse"),
                       ),
                     ),
-                    ElevatedButton(
-                        onPressed: () async {
-                          Map<String, dynamic>? comprobar =
-                              await insertImagenes(5, _images);
-                          if (comprobar != null) {
-                            if (comprobar['status'] == 1) {
-                              mostrarSnackBar(
-                                  context, comprobar['mensaje'].toString());
-                            } else {
-                              mostrarSnackBar(
-                                  context, comprobar['mensaje'].toString());
-                            }
-                          } else {
-                            mostrarSnackBar(
-                                context, "Error al subir las imagenes");
-                          }
-                        },
-                        child: Text('prueba'))
                   ],
                 ),
               ),
@@ -517,7 +530,6 @@ Future<Map<String, dynamic>?> insertImagenes(
 class Imagen {
   String nombre;
   String tipo;
-
   Uint8List data;
 
   Imagen(this.nombre, this.tipo, this.data);
