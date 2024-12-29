@@ -65,6 +65,7 @@ CREATE TABLE Chat (
 CREATE TABLE Imagenes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     perfilId INT NOT NULL,
+    posicionImagen INT NOT NULL,
     nombre VARCHAR(255) NOT NULL,
     tipo VARCHAR(255) NOT NULL,
     datos LONGBLOB,
