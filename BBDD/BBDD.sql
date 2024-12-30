@@ -18,7 +18,7 @@ CREATE TABLE Perfil (
     usuarioId INT NOT NULL UNIQUE,
     nombre VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
-    edad INT NOT NULL,
+    fecha_nacimiento date,
     telefono INT NOT NULL,
     genero ENUM('Masculino', 'Femenino') NOT NULL,
     buscandoPiso BOOLEAN NOT NULL,

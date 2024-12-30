@@ -1,7 +1,7 @@
 <?php
 require_once "../Conector/conexion.php";
 $usuarioId = -1;
-function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $telefono, $genero, $buscandoPiso, $biografia, $ciudad) {
+function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $buscandoPiso, $biografia, $ciudad) {
     global $usuarioId;
     try {
         $conexion = getConexion();
@@ -14,11 +14,11 @@ function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $te
 
             $usuarioId = $conexion->lastInsertId();
 
-            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, edad, telefono, genero, buscandoPiso, biografia, ubicacion) VALUES (:usuarioId, :nombre, :apellidos, :edad, :telefono, :genero, :buscandoPiso, :biografia, :ubicacion)");
+            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, fecha_nacimiento, telefono, genero, buscandoPiso, biografia, ubicacion) VALUES (:usuarioId, :nombre, :apellidos, :fechaNacimiento, :telefono, :genero, :buscandoPiso, :biografia, :ubicacion)");
             $resultado->bindParam(":usuarioId", $usuarioId);
             $resultado->bindParam(":nombre", $nombre);
             $resultado->bindParam(":apellidos", $apellidos);
-            $resultado->bindParam(":edad", $edad);
+            $resultado->bindParam(":fechaNacimiento", $fechaNacimiento);
             $resultado->bindParam(":telefono", $telefono);
             $resultado->bindParam(":genero", $genero);
             $resultado->bindParam(":buscandoPiso", $buscandoPiso);
@@ -61,7 +61,7 @@ $nombre = $_POST["nombre"];
 $apellidos = $_POST["apellidos"];
 $correo = $_POST["correo"];
 $contrasena = $_POST["contrasena"];
-$edad = $_POST["edad"];
+$fechaNacimiento = $_POST["fechaNacimiento"];
 $telefono = $_POST["telefono"];
 $genero =$_POST["genero"];
 $buscandoPiso = ($_POST["buscandoPiso"]) ? 1 : 0;
@@ -74,7 +74,7 @@ if($comprobarUsuario != null){
     echo json_encode(["status" => 0, "mensaje" => "El correo ya está registrado"]);
     return;
 }else{
-    $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $edad, $telefono, $genero, $buscandoPiso, $ciudad, $biografia);
+    $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $buscandoPiso, $ciudad, $biografia);
     if ($usuarioRegistrado) {
         echo json_encode(["status" => 1, "mensaje" => "Usuario registrado","usuarioId" => "$usuarioId"]);
     } else {
