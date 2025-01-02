@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:swifthome/page/registration.dart';
+import 'package:swifthome/page/registration_step_third.dart';
 
 class NetworkEnviarImagenes {
   String url;

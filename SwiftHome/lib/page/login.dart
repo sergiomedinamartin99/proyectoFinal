@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_check.dart';
-import 'package:swifthome/page/registration.dart';
+import 'package:swifthome/page/registration_step_one.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key, required this.title});
-
-  final String title;
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -21,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: Text("uwu"),
       ),
       body: Center(
         child: Form(
@@ -96,10 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => RegistrationPage(
-                        title: "Registro",
-                      ),
-                    ),
+                        builder: (context) => RegistrationStepOnePage()),
                   );
                 },
                 child: Text("Registrarse"),

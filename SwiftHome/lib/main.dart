@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/login.dart';
+import 'package:swifthome/page/registration_step_one.dart';
 
 void main() {
   runApp(const MyApp());
@@ -41,7 +43,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         const Locale('es', ''), // Español
       ],
-      home: const LoginPage(title: 'Flutter Demo Home Page'),
+      //home: const LoginPage(title: 'Flutter Demo Home Page'),
+      home: const HomePage(idPersona: 1),
     );
   }
 }
