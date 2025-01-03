@@ -94,6 +94,15 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
                                       ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                          width: 2,
+                                        ),
+                                      ),
                                     ),
                                     keyboardType: TextInputType.emailAddress,
                                   ),
@@ -124,6 +133,15 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                             Radius.circular(10)),
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                          width: 2,
+                                        ),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
@@ -168,6 +186,15 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                             Radius.circular(10)),
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: Colors.black,
+                                          width: 2,
+                                        ),
                                       ),
                                       suffixIcon: IconButton(
                                         icon: Icon(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:swifthome/page/login.dart';
+import 'package:swifthome/page/profile.dart';
 
-class AppbarStart extends StatelessWidget {
+class AppbarAlreadyRegistered extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -33,14 +34,33 @@ class AppbarStart extends StatelessWidget {
       backgroundColor: Colors.black,
       actions: [
         IconButton(
+            icon: const Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            onPressed: null),
+        IconButton(
           icon: const Icon(
-            Icons.home,
+            Icons.chat,
             color: Colors.white,
           ),
           onPressed: () {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => LoginPage(),
+              ),
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(
+            Icons.person,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(),
               ),
             );
           },

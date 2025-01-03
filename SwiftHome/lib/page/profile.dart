@@ -5,20 +5,12 @@ import 'package:swifthome/widget/appbarStart.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
 
-class RegistrationStepSecondPage extends StatefulWidget {
-  const RegistrationStepSecondPage(
-      {super.key, required this.correoElectronico, required this.contrasena});
-
-  final String correoElectronico;
-  final String contrasena;
-
+class ProfilePage extends StatefulWidget {
   @override
-  State<RegistrationStepSecondPage> createState() =>
-      _RegistrationStepSecondPageState();
+  State<ProfilePage> createState() => _ProfilePagePageState();
 }
 
-class _RegistrationStepSecondPageState
-    extends State<RegistrationStepSecondPage> {
+class _ProfilePagePageState extends State<ProfilePage> {
   List<String> genero = [
     "Masculino",
     "Femenino",
@@ -132,15 +124,6 @@ class _RegistrationStepSecondPageState
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.name,
                                   ),
@@ -163,15 +146,6 @@ class _RegistrationStepSecondPageState
                                             Radius.circular(10)),
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
                                       ),
                                     ),
                                     keyboardType: TextInputType.name,
@@ -215,15 +189,6 @@ class _RegistrationStepSecondPageState
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
-                                      ),
                                     ),
                                     readOnly: true,
                                     onTap: () => _selectDate(context),
@@ -249,39 +214,13 @@ class _RegistrationStepSecondPageState
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.phone,
                                   ),
                                   labelForm(title: "Genero"),
                                   Align(
-                                    alignment: Alignment.topLeft,
+                                    alignment: Alignment.centerLeft,
                                     child: DropdownButtonFormField<String>(
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          borderSide: BorderSide(
-                                              color: Colors.black, width: 2.0),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,
-                                          ),
-                                        ),
-                                      ),
                                       value: generoSeleccionado,
                                       validator: (value) {
                                         if (value == null) {
@@ -307,25 +246,8 @@ class _RegistrationStepSecondPageState
                                   ),
                                   labelForm(title: "Ubicación"),
                                   Align(
-                                    alignment: Alignment.topLeft,
+                                    alignment: Alignment.centerLeft,
                                     child: DropdownButtonFormField<String>(
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          borderSide: BorderSide(
-                                              color: Colors.black, width: 2.0),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,
-                                          ),
-                                        ),
-                                      ),
                                       value: ciudadSeleccionada,
                                       validator: (value) {
                                         if (value == null) {
@@ -351,25 +273,8 @@ class _RegistrationStepSecondPageState
                                   ),
                                   labelForm(title: "¿Qué buscas en SwiftHome?"),
                                   Align(
-                                    alignment: Alignment.topLeft,
+                                    alignment: Alignment.centerLeft,
                                     child: DropdownButtonFormField<bool>(
-                                      decoration: const InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          borderSide: BorderSide(
-                                              color: Colors.black, width: 2.0),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                          borderSide: BorderSide(
-                                            color: Colors.black,
-                                            width: 2,
-                                          ),
-                                        ),
-                                      ),
                                       validator: (value) {
                                         if (value == null) {
                                           return 'Por favor, selecciona el tipo de búsqueda';
@@ -413,15 +318,6 @@ class _RegistrationStepSecondPageState
                                         borderSide: BorderSide(
                                             color: Colors.black, width: 2.0),
                                       ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
-                                      ),
                                     ),
                                     keyboardType: TextInputType.multiline,
                                     maxLines: 5,
@@ -441,36 +337,7 @@ class _RegistrationStepSecondPageState
                                       onPressed: () async {
                                         if (_formularioRegistroStepSecond
                                             .currentState!
-                                            .validate()) {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RegistrationStepThirdPage(
-                                                correoElectronico:
-                                                    widget.correoElectronico,
-                                                contrasena: widget.contrasena,
-                                                nombre: _controllerNombre.text
-                                                    .trim(),
-                                                apellidos: _controllerApellidos
-                                                    .text
-                                                    .trim(),
-                                                fechaNacimiento:
-                                                    _controllerFechaNacimiento
-                                                        .text,
-                                                telefono: _controllerTelefono
-                                                    .text
-                                                    .trim(),
-                                                genero: generoSeleccionado!,
-                                                ciudad: ciudadSeleccionada!,
-                                                buscandoPiso:
-                                                    buscandoPisoSeleccionado!,
-                                                biografia: _controllerBiografia
-                                                    .text
-                                                    .trim(),
-                                              ),
-                                            ),
-                                          );
-                                        }
+                                            .validate()) {}
                                       },
                                       child: Text("Siguiente"),
                                     ),
