@@ -4,24 +4,19 @@ import 'package:http/http.dart';
 
 class NetworkCheck {
   final String url;
-  final Map<String, String> user;
-  NetworkCheck(this.url, this.user);
+  final Map<String, dynamic> mapa;
+  NetworkCheck(this.url, this.mapa);
 
-  Future<bool> fetchData() async {
-    debugPrint("$url\n ${json.encode(user)}");
-    Response response = await post(Uri.parse(url), body: user);
+  Future<Map<String, dynamic>?> fetchData() async {
+    debugPrint(url);
+    debugPrint("$mapa");
+    Response response = await post(Uri.parse(url), body: mapa);
     if (response.statusCode == 200) {
-      debugPrint(response.body);
-      var responseJson = json.decode(response.body);
-      if (responseJson['status'] == 1) {
-        debugPrint("Correcto");
-        return true;
-      } else {
-        return false;
-      }
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      return responseData;
     } else {
       debugPrint("Error: ${response.statusCode}");
+      return null;
     }
-    return false;
   }
 }

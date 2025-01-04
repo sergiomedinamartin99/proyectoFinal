@@ -2,10 +2,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_check.dart';
+import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/registration_step_one.dart';
 import 'package:swifthome/widget/appbarStart.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
+import 'package:swifthome/widget/snackBar_%20personalized.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -132,41 +134,43 @@ class _LoginPageState extends State<LoginPage> {
                                             _controladorContrasena.text
                                                     .trim() !=
                                                 "") {
-                                          if (await validarLogin(
-                                              _controladorCorreo.text,
-                                              _controladorContrasena.text)) {
-                                            /** 
-                        setState(() {
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                                  builder: (context) => PruebaPage(
-                                        title: "prueba",
-                                      )));
-                        });
-                        */
+                                          Map<String, dynamic>? check =
+                                              await validarLogin(
+                                                  _controladorCorreo.text,
+                                                  _controladorContrasena.text);
+
+                                          if (check != null) {
+                                            if (check['status'] == 1) {
+                                              SnackbarPersonalized(
+                                                      title: check['mensaje'])
+                                                  .show(context);
+                                              Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HomePage(
+                                                    idPersona:
+                                                        check['usuarioId'],
+                                                  ),
+                                                ),
+                                                (Route<dynamic> route) => false,
+                                              );
+                                            } else {
+                                              SnackbarPersonalized(
+                                                      title: check['mensaje'])
+                                                  .show(context);
+                                            }
                                           } else {
-                                            final snackBar = SnackBar(
-                                              content: const Text(
-                                                  'Correo y/o contraseña incorrectos. Por favor, vuelve a intentarlo.'),
-                                              action: SnackBarAction(
-                                                label: 'Cerrar',
-                                                onPressed: () {},
-                                              ),
-                                            );
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(snackBar);
+                                            SnackbarPersonalized(
+                                                    title:
+                                                        'Error en la conexión. Por favor, inténtalo de nuevo.')
+                                                .show(context);
                                           }
                                         } else {
-                                          final snackBar = SnackBar(
-                                            content: const Text(
-                                                'No puedes dejar campos vacios. Por favor, rellena los campos.'),
-                                            action: SnackBarAction(
-                                              label: 'Cerrar',
-                                              onPressed: () {},
-                                            ),
-                                          );
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(snackBar);
+                                          SnackbarPersonalized(
+                                                  title:
+                                                      'No puedes dejar campos vacios. Por favor, rellena los campos.')
+                                              .show(context);
                                         }
                                       },
                                       child: Text("Iniciar Sesión"),
@@ -219,11 +223,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-Future<bool> validarLogin(String nombreusuario, String contrasenya) async {
+Future<Map<String, dynamic>?> validarLogin(
+    String nombreusuario, String contrasenya) async {
   String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlLogin}';
   final user = {"correo": nombreusuario, "contrasena": contrasenya};
   NetworkCheck network = NetworkCheck(url, user);
-  bool data = await network.fetchData();
-  debugPrint("$data");
-  return data;
+  return network.fetchData();
 }

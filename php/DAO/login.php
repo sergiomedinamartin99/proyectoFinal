@@ -1,7 +1,6 @@
 <?php
 
 require_once "../Conector/conexion.php";
-//session_start();
 
 function getComprobarUsuario($correo) {
     $usuario = null;
@@ -24,17 +23,17 @@ function getComprobarUsuario($correo) {
     return $usuario;
 }
 
-$correo = filter_var($_POST['correo'], FILTER_VALIDATE_EMAIL);
-$contrasena = htmlspecialchars($_POST['contrasena'], ENT_QUOTES, 'UTF-8');
+$correo = $_POST['correo'];
+$contrasena = $_POST['contrasena'];
+
 
 
 $existeUsuario = getComprobarUsuario($correo);
 if ($existeUsuario) {
     if (password_verify($contrasena, $existeUsuario["contrasena"])) {
-        //$_SESSION["idUsuario"] = $existeUsuario["id"];
-        echo json_encode(["status" => 1, "mensaje" => "Usuario encontrado"]);
+        echo json_encode(["status" => 1, "mensaje" => "Usuario logeado correctamente", "usuarioId" => $existeUsuario["id"]]);
     } else {
-        echo json_encode(["status" => 0, "mensaje" => "Usuario no encontrado"]);
+        echo json_encode(["status" => 0, "mensaje" => "Error en el correo electrónico y/o en la contraseña"]);
     }
 } else {
     echo json_encode(["status" => 0, "mensaje" => "Usuario no encontrado"]);

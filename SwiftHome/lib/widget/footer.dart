@@ -9,7 +9,7 @@ class Footer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Text(
-          "© 2024 RoomSwipe. Todos los derechos reservados.",
+          "© 2025 RoomSwipe. Todos los derechos reservados.",
           textAlign: TextAlign.center,
         ),
       ),

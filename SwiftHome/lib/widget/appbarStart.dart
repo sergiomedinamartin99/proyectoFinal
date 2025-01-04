@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/login.dart';
 
 class AppbarStart extends StatelessWidget {
@@ -18,7 +19,7 @@ class AppbarStart extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) => LeadingPage(),
             ),
           );
         },

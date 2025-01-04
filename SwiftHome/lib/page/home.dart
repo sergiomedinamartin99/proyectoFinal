@@ -34,7 +34,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
-          preferredSize: Size(20, 50), child: AppbarAlreadyRegistered()),
+          preferredSize: Size(20, 50),
+          child: AppbarAlreadyRegistered(idPersona: widget.idPersona)),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -43,6 +44,10 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text(
+                widget.idPersona.toString(),
+                style: TextStyle(fontSize: 100),
+              ),
               Text(
                 "RoomSwipe: Encuentra tu compañero ideal",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
