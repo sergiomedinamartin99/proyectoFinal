@@ -27,7 +27,6 @@ class _ProfilePagePageState extends State<ProfilePage> {
   String? generoSeleccionado;
   bool? buscandoPisoSeleccionado;
   String? ciudadSeleccionada;
-  DateTime? _selectedDate;
   final _formularioRegistroStepSecond = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controllerNombre = TextEditingController();
@@ -41,17 +40,18 @@ class _ProfilePagePageState extends State<ProfilePage> {
   final List<Imagen?> _imagenes =
       List.filled(9, null); // Lista de 9 imágenes o vacías
 
-  Uint8List _imagen2 = Uint8List(0);
-
   @override
   void initState() {
     ciudades.sort();
     getDatosUsuario(widget.idPersona.toString()).then((value) {
       getImagenesUsuario(widget.idPersona.toString()).then((valueImagenes) {
         if (valueImagenes != null) {
-          _imagen2 = base64Decode(valueImagenes['imagenes']['datos']);
-          _imagenes[valueImagenes['imagenes']['posicionImagen']] =
-              Imagen("imagen", "imagen/png", _imagen2);
+          for (int i = 0; i < valueImagenes['imagenes'].length; i++) {
+            _imagenes[valueImagenes['imagenes'][i]['posicionImagen']] = Imagen(
+                valueImagenes['imagenes'][i]['nombre'],
+                valueImagenes['imagenes'][i]['tipo'],
+                base64Decode(valueImagenes['imagenes'][i]['datos']));
+          }
         }
       });
       if (value != null) {
@@ -416,7 +416,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
                     fit: StackFit.expand,
                     children: [
                       Image.memory(
-                        _imagen2,
+                        _imagenes[index]!.data,
                         fit: BoxFit.cover,
                       ),
                       Positioned(

@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/login.dart';
+import 'package:swifthome/page/profile.dart';
 import 'package:swifthome/page/registration_step_one.dart';
 
 void main() {
@@ -45,7 +46,9 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
-      home: const LeadingPage(),
+      home: const ProfilePage(
+        idPersona: 1,
+      ),
     );
   }
 }
