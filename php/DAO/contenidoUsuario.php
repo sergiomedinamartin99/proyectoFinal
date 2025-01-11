@@ -3,15 +3,15 @@
 require_once "../Conector/conexion.php";
 
 function getPerfilUsuario($idUsuario) {
-    $imagenes = null;
+    $usuario = null;
     try {
         $conexion = getConexion();
         if ($conexion != null) {
-            $resultado = $conexion->prepare("SELECT * FROM Imagenes WHERE perfilId=:id");
+            $resultado = $conexion->prepare("SELECT * FROM Imagenes WHERE usuarioId=:id");
             $resultado->bindParam(":id", $idUsuario);
             $resultado->execute();
-            $imagenes = $resultado->fetch();
-            return $imagenes;
+            $usuario = $resultado->fetch();
+            return $usuario;
         }
     } catch (Exception $ex) {
         return 0;
@@ -20,13 +20,14 @@ function getPerfilUsuario($idUsuario) {
     } finally {
         $conexion = null;
     }
-    return $imagenes;
+    return $usuario;
 }
 
-$idUsuario = 1;
-$imagenesRecuperadas = getPerfilUsuario($idUsuario);
-if ($imagenesRecuperadas) {
-    echo json_encode(["status" => 1, "imagenes" => [$imagenesRecuperadas]]);
+$idUsuario = $_POST['idUsuario'];
+
+$perfilUsuario = getPerfilUsuario($idUsuario);
+if ($perfilUsuario) {
+    echo json_encode(["status" => 1, "perfilUsuario" => $perfilUsuario]);
 } else {
     echo json_encode(["status" => 0, "mensaje" => "Usuario sin perfil"]);
 }

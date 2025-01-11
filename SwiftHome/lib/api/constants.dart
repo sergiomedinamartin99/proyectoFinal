@@ -6,4 +6,8 @@ class ClassConstant {
       '/ProyectoFinal/php/DAO/imagenesInsertar.php';
   static const String urlExisteCorreo =
       '/ProyectoFinal/php/DAO/validationEmail.php';
+  static const String urlContenidoUsuario =
+      '/ProyectoFinal/php/DAO/contenidoUsuario.php';
+  static const String urlImagenesObtener =
+      '/ProyectoFinal/php/DAO/imagenesObtener.php';
 }

@@ -66,7 +66,9 @@ class AppbarAlreadyRegistered extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => ProfilePage(),
+                builder: (context) => ProfilePage(
+                  idPersona: idPersona,
+                ),
               ),
             );
           },

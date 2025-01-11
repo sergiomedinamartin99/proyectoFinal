@@ -3,6 +3,8 @@ import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/login.dart';
 
 class AppbarStart extends StatelessWidget {
+  final String page;
+  AppbarStart({required this.page});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -33,19 +35,20 @@ class AppbarStart extends StatelessWidget {
       ),
       backgroundColor: Colors.black,
       actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.home,
-            color: Colors.white,
+        if (page != "leading")
+          IconButton(
+            icon: const Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ),
+              );
+            },
           ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => LoginPage(),
-              ),
-            );
-          },
-        ),
       ],
     );
   }

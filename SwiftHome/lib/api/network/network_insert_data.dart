@@ -13,9 +13,12 @@ class NetworkInsertData {
     debugPrint("$mapa");
     Response response = await post(Uri.parse(url), body: mapa);
     if (response.statusCode == 200) {
+      print("ENTRALOOOOOOOOOOOO");
       final Map<String, dynamic> responseData = json.decode(response.body);
+      print(responseData);
       return responseData;
     } else {
+      print("ERRORAZOOOOOOOOOO");
       debugPrint("Error: ${response.statusCode}");
       return null;
     }

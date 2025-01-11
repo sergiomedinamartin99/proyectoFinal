@@ -21,7 +21,10 @@ class RegistrationStepThirdPage extends StatefulWidget {
   final String genero;
   final String ciudad;
   final bool buscandoPiso;
+  final String ocupacion;
   final String biografia;
+  final String precio;
+  final String descripcionVivienda;
 
   const RegistrationStepThirdPage({
     super.key,
@@ -34,7 +37,10 @@ class RegistrationStepThirdPage extends StatefulWidget {
     required this.genero,
     required this.ciudad,
     required this.buscandoPiso,
+    required this.ocupacion,
     required this.biografia,
+    required this.precio,
+    required this.descripcionVivienda,
   });
 
   @override
@@ -102,7 +108,11 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
-      appBar: PreferredSize(preferredSize: Size(20, 50), child: AppbarStart()),
+      appBar: PreferredSize(
+          preferredSize: Size(20, 50),
+          child: AppbarStart(
+            page: 'registration',
+          )),
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           controller: _scrollController,
@@ -267,18 +277,20 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                         if (!showValidationText) {
                                           Map<String, dynamic>? comprobar =
                                               await insertarDatosUsuario(
-                                                  widget.nombre,
-                                                  widget.apellidos,
-                                                  widget.correoElectronico,
-                                                  widget.contrasena,
-                                                  widget.fechaNacimiento,
-                                                  widget.telefono,
-                                                  widget.genero,
-                                                  widget.buscandoPiso
-                                                      .toString(),
-                                                  widget.ciudad.toString(),
-                                                  widget.biografia,
-                                                  _imagenes);
+                                            widget.nombre,
+                                            widget.apellidos,
+                                            widget.correoElectronico,
+                                            widget.contrasena,
+                                            widget.fechaNacimiento,
+                                            widget.telefono,
+                                            widget.genero,
+                                            widget.ciudad.toString(),
+                                            widget.buscandoPiso.toString(),
+                                            widget.ocupacion,
+                                            widget.biografia,
+                                            widget.precio,
+                                            widget.descripcionVivienda,
+                                          );
                                           if (comprobar != null &&
                                               _imagenes.isNotEmpty) {
                                             if (comprobar['status'] == 1) {
@@ -377,10 +389,12 @@ Future<Map<String, dynamic>?> insertarDatosUsuario(
   String fechaNacimiento,
   String telefono,
   String genero,
-  String buscandoPiso,
   String ciudad,
+  String buscandoPiso,
+  String ocupacion,
   String biografia,
-  List<Imagen?> imagenes,
+  String precio,
+  String descripcionVivienda,
 ) {
   // Parse the input date string
   DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(fechaNacimiento);
@@ -397,11 +411,14 @@ Future<Map<String, dynamic>?> insertarDatosUsuario(
     'fechaNacimiento': formattedDate,
     'telefono': telefono,
     'genero': genero,
-    'buscandoPiso': buscandoPiso,
     'ciudad': ciudad,
+    'buscandoPiso': buscandoPiso,
+    'ocupacion': ocupacion,
     'biografia': biografia,
+    'precio': precio,
+    'descripcionVivienda': descripcionVivienda,
   };
-  print(imagenes.toString());
+
   NetworkInsertData network = NetworkInsertData(url, useroomswift);
   return network.fetchData();
 }

@@ -30,7 +30,11 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
-      appBar: PreferredSize(preferredSize: Size(20, 50), child: AppbarStart()),
+      appBar: PreferredSize(
+          preferredSize: Size(20, 50),
+          child: AppbarStart(
+            page: 'registration',
+          )),
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           controller: _scrollController,

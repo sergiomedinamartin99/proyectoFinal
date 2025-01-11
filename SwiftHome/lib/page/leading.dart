@@ -17,7 +17,8 @@ class _LeadingPageState extends State<LeadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
-      appBar: PreferredSize(preferredSize: Size(20, 50), child: AppbarStart()),
+      appBar: PreferredSize(
+          preferredSize: Size(20, 50), child: AppbarStart(page: "leading")),
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           controller: _scrollController,
@@ -140,12 +141,12 @@ class _LeadingPageState extends State<LeadingPage> {
                         SizedBox(height: 40),
                         Wrap(
                           alignment: WrapAlignment.center,
-                          runSpacing: 8.0,
-                          spacing: 32.0,
+                          runSpacing: 16.0,
+                          spacing: 16.0,
                           children: [
-                            SizedBox(
-                              width: 300,
-                              height: 230,
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: 300, minHeight: 250),
                               child: Card(
                                 color: Colors.white,
                                 child: Padding(
@@ -175,9 +176,9 @@ class _LeadingPageState extends State<LeadingPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 300,
-                              height: 230,
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: 300, minHeight: 250),
                               child: Card(
                                 color: Colors.white,
                                 child: Padding(
@@ -207,9 +208,9 @@ class _LeadingPageState extends State<LeadingPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 300,
-                              height: 230,
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: 300, minHeight: 250),
                               child: Card(
                                 color: Colors.white,
                                 child: Padding(
@@ -239,9 +240,9 @@ class _LeadingPageState extends State<LeadingPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 300,
-                              height: 230,
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxWidth: 300, minHeight: 250),
                               child: Card(
                                 color: Colors.white,
                                 child: Padding(

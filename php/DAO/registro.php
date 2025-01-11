@@ -1,7 +1,7 @@
 <?php
 require_once "../Conector/conexion.php";
 $usuarioId = -1;
-function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $buscandoPiso, $biografia, $ciudad) {
+function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $ciudad, $buscandoPiso, $ocupacion, $biografia, $precio, $descripcionVivienda) {
     global $usuarioId;
     try {
         $conexion = getConexion();
@@ -14,19 +14,32 @@ function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNaci
 
             $usuarioId = $conexion->lastInsertId();
 
-            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, fecha_nacimiento, telefono, genero, buscandoPiso, biografia, ubicacion) VALUES (:usuarioId, :nombre, :apellidos, :fechaNacimiento, :telefono, :genero, :buscandoPiso, :biografia, :ubicacion)");
+            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, fecha_nacimiento, telefono, genero, ubicacion, buscandoPiso) VALUES (:usuarioId, :nombre, :apellidos, :fechaNacimiento, :telefono, :genero, :ubicacion, :buscandoPiso)");
             $resultado->bindParam(":usuarioId", $usuarioId);
             $resultado->bindParam(":nombre", $nombre);
             $resultado->bindParam(":apellidos", $apellidos);
             $resultado->bindParam(":fechaNacimiento", $fechaNacimiento);
             $resultado->bindParam(":telefono", $telefono);
             $resultado->bindParam(":genero", $genero);
-            $resultado->bindParam(":buscandoPiso", $buscandoPiso);
-            $resultado->bindParam(":biografia", $biografia);
             $resultado->bindParam(":ubicacion", $ciudad);
+            $resultado->bindParam(":buscandoPiso", $buscandoPiso);
             $resultado->execute();
 
-             
+            $perfilId = $conexion->lastInsertId();
+
+            if ($buscandoPiso == 1) {
+                $resultado = $conexion->prepare("INSERT INTO Buscador (perfilId, ocupacion, biografia) VALUES (:perfilId, :ocupacion, :biografia)");
+                $resultado->bindParam(":perfilId", $perfilId);
+                $resultado->bindParam(":ocupacion", $ocupacion);
+                $resultado->bindParam(":biografia", $biografia);
+            } else if ($buscandoPiso == 0) {
+                $resultado = $conexion->prepare("INSERT INTO Propietario (perfilId, precio, descripcion_vivienda) VALUES (:perfilId, :precio, :descripcionVivienda)");
+                $resultado->bindParam(":perfilId", $perfilId);
+                $resultado->bindParam(":precio", $precio);
+                $resultado->bindParam(":descripcionVivienda", $descripcionVivienda);
+            }
+
+            $resultado->execute();
             
             return true;
         }
@@ -63,10 +76,13 @@ $correo = $_POST["correo"];
 $contrasena = $_POST["contrasena"];
 $fechaNacimiento = $_POST["fechaNacimiento"];
 $telefono = $_POST["telefono"];
-$genero =$_POST["genero"];
-$buscandoPiso = ($_POST["buscandoPiso"]) ? 1 : 0;
+$genero = $_POST["genero"];
 $ciudad = $_POST["ciudad"];
+$buscandoPiso = ($_POST["buscandoPiso"] === "true") ? 1 : 0;
+$ocupacion = $_POST["ocupacion"];
 $biografia = $_POST["biografia"];
+$precio = $_POST["precio"];
+$descripcionVivienda = $_POST["descripcionVivienda"];
 
 $comprobarUsuario = getUsuarioPorCorreo($correo);
 
@@ -74,7 +90,7 @@ if($comprobarUsuario != null){
     echo json_encode(["status" => 0, "mensaje" => "El correo ya está registrado"]);
     return;
 }else{
-    $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $buscandoPiso, $ciudad, $biografia);
+    $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $ciudad, $buscandoPiso, $ocupacion, $biografia, $precio, $descripcionVivienda);
     if ($usuarioRegistrado) {
         echo json_encode(["status" => 1, "mensaje" => "Usuario registrado","usuarioId" => "$usuarioId"]);
     } else {

@@ -29,10 +29,23 @@ class _RegistrationStepSecondPageState
     "Madrid",
     "Valladolid",
   ];
+  List<String> ocupaciones = [
+    "Médico",
+    "Ingeniero",
+    "Profesor",
+    "Diseñador Gráfico",
+    "Informático",
+    "Abogado",
+    "Contador",
+    "Electricista",
+    "Chef",
+    "Arquitecto"
+  ];
   String? generoSeleccionado;
   bool? buscandoPisoSeleccionado;
   String? ciudadSeleccionada;
   DateTime? _selectedDate;
+  String? ocupacionSeleccionada;
 
   final _formularioRegistroStepSecond = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
@@ -42,6 +55,9 @@ class _RegistrationStepSecondPageState
       TextEditingController();
   final TextEditingController _controllerTelefono = TextEditingController();
   final TextEditingController _controllerBiografia = TextEditingController();
+  final TextEditingController _controllerPrecio = TextEditingController();
+  final TextEditingController _controllerDescripcionVivienda =
+      TextEditingController();
 
   @override
   void initState() {
@@ -72,7 +88,11 @@ class _RegistrationStepSecondPageState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
-      appBar: PreferredSize(preferredSize: Size(20, 50), child: AppbarStart()),
+      appBar: PreferredSize(
+          preferredSize: Size(20, 50),
+          child: AppbarStart(
+            page: 'registration',
+          )),
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           controller: _scrollController,
@@ -265,6 +285,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<String>(
+                                      isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -309,6 +330,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<String>(
+                                      isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -353,6 +375,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<bool>(
+                                      isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
@@ -396,36 +419,191 @@ class _RegistrationStepSecondPageState
                                       },
                                     ),
                                   ),
-                                  labelForm(title: "Biografía"),
-                                  TextFormField(
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Por favor, introduce tu biografía';
-                                      }
-                                      return null;
-                                    },
-                                    controller: _controllerBiografia,
-                                    decoration: const InputDecoration(
-                                      hintText: "Introduce tu biografía...",
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        borderSide: BorderSide(
-                                            color: Colors.black, width: 2.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
-                                        borderSide: BorderSide(
-                                          color: Colors.black,
-                                          width: 2,
-                                        ),
-                                      ),
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: 5,
-                                  ),
+
+                                  // AQUI ES METER NUEVAS COSAS
+                                  buscandoPisoSeleccionado == true
+                                      ? Column(
+                                          children: [
+                                            labelForm(title: "Ocupación"),
+                                            // EDITAR
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: DropdownButtonFormField<
+                                                  String>(
+                                                isExpanded: true,
+                                                decoration:
+                                                    const InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                    borderSide: BorderSide(
+                                                        color: Colors.black,
+                                                        width: 2.0),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(10),
+                                                    ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2,
+                                                    ),
+                                                  ),
+                                                ),
+                                                value: ocupacionSeleccionada,
+                                                validator: (value) {
+                                                  if (value == null) {
+                                                    return 'Por favor, selecciona tu ocupaación';
+                                                  }
+                                                  return null;
+                                                },
+                                                hint: Text(
+                                                    "Selecciona tu ocupaación"),
+                                                items: ocupaciones
+                                                    .map((String ocupaciones) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: ocupaciones,
+                                                    child: Text(ocupaciones),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? value) {
+                                                  setState(() {
+                                                    if (value != null) {
+                                                      ocupacionSeleccionada =
+                                                          value;
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                            ),
+                                            labelForm(title: "Biografía"),
+                                            TextFormField(
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Por favor, introduce tu biografía';
+                                                }
+                                                return null;
+                                              },
+                                              controller: _controllerBiografia,
+                                              decoration: const InputDecoration(
+                                                hintText:
+                                                    "Introduce tu biografía...",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2.0),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(10)),
+                                                  borderSide: BorderSide(
+                                                      color: Colors.black,
+                                                      width: 2),
+                                                ),
+                                              ),
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              maxLines: 5,
+                                            ),
+                                          ],
+                                        )
+                                      : buscandoPisoSeleccionado == false
+                                          ? Column(
+                                              children: [
+                                                // AÑADIR CAMPOS PARA OFRECER HABITACIÓN
+                                                labelForm(title: "Precio"),
+                                                TextFormField(
+                                                  validator: (value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Por favor, introduce el precio de la vivienda';
+                                                    } else if (!RegExp(
+                                                            r'^[0-9]*$')
+                                                        .hasMatch(value)) {
+                                                      return 'Por favor, introduce un precio válido sin puntos ni decimales';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  controller: _controllerPrecio,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText:
+                                                        "Introduce el precio de la vivienda...",
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.black,
+                                                          width: 2.0),
+                                                    ),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.black,
+                                                          width: 2),
+                                                    ),
+                                                  ),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                ),
+                                                labelForm(
+                                                    title:
+                                                        "Descripción de la vivienda"),
+                                                TextFormField(
+                                                  validator: (value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Por favor, introduce la descripción de la vivienda';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  controller:
+                                                      _controllerDescripcionVivienda,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText:
+                                                        "Introduce la descripción de la vivienda...",
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.black,
+                                                          width: 2.0),
+                                                    ),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  10)),
+                                                      borderSide: BorderSide(
+                                                          color: Colors.black,
+                                                          width: 2),
+                                                    ),
+                                                  ),
+                                                  keyboardType:
+                                                      TextInputType.multiline,
+                                                  maxLines: 5,
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox(),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16.0),
                                     child: ElevatedButton(
@@ -442,34 +620,76 @@ class _RegistrationStepSecondPageState
                                         if (_formularioRegistroStepSecond
                                             .currentState!
                                             .validate()) {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RegistrationStepThirdPage(
-                                                correoElectronico:
-                                                    widget.correoElectronico,
-                                                contrasena: widget.contrasena,
-                                                nombre: _controllerNombre.text
-                                                    .trim(),
-                                                apellidos: _controllerApellidos
-                                                    .text
-                                                    .trim(),
-                                                fechaNacimiento:
-                                                    _controllerFechaNacimiento
-                                                        .text,
-                                                telefono: _controllerTelefono
-                                                    .text
-                                                    .trim(),
-                                                genero: generoSeleccionado!,
-                                                ciudad: ciudadSeleccionada!,
-                                                buscandoPiso:
-                                                    buscandoPisoSeleccionado!,
-                                                biografia: _controllerBiografia
-                                                    .text
-                                                    .trim(),
+                                          if (buscandoPisoSeleccionado ==
+                                              true) {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RegistrationStepThirdPage(
+                                                  correoElectronico:
+                                                      widget.correoElectronico,
+                                                  contrasena: widget.contrasena,
+                                                  nombre: _controllerNombre.text
+                                                      .trim(),
+                                                  apellidos:
+                                                      _controllerApellidos.text
+                                                          .trim(),
+                                                  fechaNacimiento:
+                                                      _controllerFechaNacimiento
+                                                          .text,
+                                                  telefono: _controllerTelefono
+                                                      .text
+                                                      .trim(),
+                                                  genero: generoSeleccionado!,
+                                                  ciudad: ciudadSeleccionada!,
+                                                  buscandoPiso:
+                                                      buscandoPisoSeleccionado!,
+                                                  ocupacion:
+                                                      ocupacionSeleccionada!,
+                                                  biografia:
+                                                      _controllerBiografia.text
+                                                          .trim(),
+                                                  precio: "",
+                                                  descripcionVivienda: "",
+                                                ),
                                               ),
-                                            ),
-                                          );
+                                            );
+                                          } else if (buscandoPisoSeleccionado ==
+                                              false) {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RegistrationStepThirdPage(
+                                                  correoElectronico:
+                                                      widget.correoElectronico,
+                                                  contrasena: widget.contrasena,
+                                                  nombre: _controllerNombre.text
+                                                      .trim(),
+                                                  apellidos:
+                                                      _controllerApellidos.text
+                                                          .trim(),
+                                                  fechaNacimiento:
+                                                      _controllerFechaNacimiento
+                                                          .text,
+                                                  telefono: _controllerTelefono
+                                                      .text
+                                                      .trim(),
+                                                  genero: generoSeleccionado!,
+                                                  ciudad: ciudadSeleccionada!,
+                                                  buscandoPiso:
+                                                      buscandoPisoSeleccionado!,
+                                                  ocupacion: "",
+                                                  biografia: "",
+                                                  precio: _controllerPrecio.text
+                                                      .trim(),
+                                                  descripcionVivienda:
+                                                      _controllerDescripcionVivienda
+                                                          .text
+                                                          .trim(),
+                                                ),
+                                              ),
+                                            );
+                                          }
                                         }
                                       },
                                       child: Text("Siguiente"),
