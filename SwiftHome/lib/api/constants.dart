@@ -10,4 +10,6 @@ class ClassConstant {
       '/ProyectoFinal/php/DAO/contenidoUsuario.php';
   static const String urlImagenesObtener =
       '/ProyectoFinal/php/DAO/imagenesObtener.php';
+  static const String urlImagenesActualizar =
+      '/ProyectoFinal/php/DAO/imagenesActualizar.php';
 }

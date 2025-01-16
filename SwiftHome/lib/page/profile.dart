@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
@@ -116,7 +114,14 @@ class _ProfilePagePageState extends State<ProfilePage> {
 
   void _removeImage(int index) {
     setState(() {
-      _imagenes[index] = null; // Eliminar la imagen de la posición específica
+      // Desplazar cada imagen una posición hacia la izquierda
+      // empezando desde la posición que se elimina.
+      for (int i = index; i < _imagenes.length - 1; i++) {
+        _imagenes[i] = _imagenes[i + 1];
+      }
+      // Colocar null en la última posición, ya que todas las imágenes
+      // se han corrido una posición a la izquierda.
+      _imagenes[_imagenes.length - 1] = null;
     });
   }
 
@@ -164,7 +169,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
                               ],
                             ),
                             Container(
-                              height: 900,
+                              height: 1200,
                               child: TabBarView(
                                 physics: BouncingScrollPhysics(),
                                 children: [
@@ -372,7 +377,37 @@ class _ProfilePagePageState extends State<ProfilePage> {
                 onPressed: () async {
                   if (_formularioRegistroStepSecond.currentState!.validate()) {}
                 },
-                child: Text("Siguiente"),
+                child: Text("Actualizar perfil"),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                onPressed: () {},
+                child: Text("Cerrar sesión"),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  minimumSize: Size(double.infinity, 50),
+                ),
+                onPressed: () {},
+                child: Text("Eliminar cuenta"),
               ),
             ),
           ],
@@ -474,8 +509,22 @@ class _ProfilePagePageState extends State<ProfilePage> {
                 ),
                 minimumSize: Size(double.infinity, 50),
               ),
-              onPressed: () async {},
-              child: Text("Registrarse"),
+              onPressed: () async {
+                Map<String, dynamic>? comprobarImagenes = await updateImagenes(
+                    int.parse(widget.idPersona.toString()), _imagenes);
+                if (comprobarImagenes != null) {
+                  if (comprobarImagenes['status'] == 1) {
+                    mostrarSnackBar(
+                        context, comprobarImagenes['mensaje'].toString());
+                  } else {
+                    mostrarSnackBar(
+                        context, comprobarImagenes['mensaje'].toString());
+                  }
+                } else {
+                  mostrarSnackBar(context, "Error al subir las imagenes");
+                }
+              },
+              child: Text("Actualizar imagenes"),
             ),
           ),
         ],
@@ -500,11 +549,12 @@ Future<Map<String, dynamic>?> getImagenesUsuario(String idUsuario) async {
   return network.fetchProfile();
 }
 
-Future<Map<String, dynamic>?> insertImagenes(
+Future<Map<String, dynamic>?> updateImagenes(
   int perfilId,
   List<Imagen?> imagenes,
 ) {
-  String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlArchivo}';
+  String url =
+      '${ClassConstant.ipBaseDatos}${ClassConstant.urlImagenesActualizar}';
 
   print(imagenes.toString());
   NetworkEnviarImagenes network = NetworkEnviarImagenes(url, perfilId,

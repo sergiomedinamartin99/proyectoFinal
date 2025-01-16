@@ -18,12 +18,19 @@ class NetworkEnviarImagenes {
     // Agregar las imágenes
     for (var imagen in imagenes) {
       if (imagen != null) {
-        var multipartFile = http.MultipartFile.fromBytes(
-          'imagenes[]', // Nombre del campo para las imágenes
+        // Split por '/' y nos quedamos con la última parte (ej. "png", "jpeg", etc.)
+        final String extension = imagen.tipo.split('/').last;
+
+        // Construimos el MediaType
+        final contentType = MediaType('image', extension);
+
+        final multipartFile = http.MultipartFile.fromBytes(
+          'imagenes[]',
           imagen.data,
           filename: imagen.nombre,
-          contentType: MediaType('image', imagen.tipo),
+          contentType: contentType,
         );
+
         request.files.add(multipartFile);
       }
     }

@@ -7,7 +7,7 @@ function getPerfilUsuario($idUsuario) {
     try {
         $conexion = getConexion();
         if ($conexion != null) {
-            $resultado = $conexion->prepare("SELECT * FROM Imagenes WHERE usuarioId=:id");
+            $resultado = $conexion->prepare("SELECT * FROM Perfil WHERE usuarioId=:id");
             $resultado->bindParam(":id", $idUsuario);
             $resultado->execute();
             $usuario = $resultado->fetch();
