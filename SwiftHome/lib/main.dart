@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
-      home: const ProfilePage(
+      home: const HomePage(
         idPersona: 1,
       ),
     );

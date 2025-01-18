@@ -26,7 +26,7 @@ function getPerfilUsuario($idUsuario) {
     return $imagenes;
 }
 
-$idUsuario = 1;
+$idUsuario = $_POST["idUsuario"];
 $imagenesRecuperadas = getPerfilUsuario($idUsuario);
 if ($imagenesRecuperadas) {
     echo json_encode(["status" => 1, "imagenes" => $imagenesRecuperadas]);

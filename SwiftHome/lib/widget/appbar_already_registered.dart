@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:swifthome/page/chat_list.dart';
 import 'package:swifthome/page/home.dart';
-import 'package:swifthome/page/login.dart';
 import 'package:swifthome/page/profile.dart';
 
 class AppbarAlreadyRegistered extends StatelessWidget {
+  String namePage;
   int idPersona;
-  AppbarAlreadyRegistered({required this.idPersona});
+  AppbarAlreadyRegistered({required this.namePage, required this.idPersona});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -44,34 +44,48 @@ class AppbarAlreadyRegistered extends StatelessWidget {
               Icons.home,
               color: Colors.white,
             ),
-            onPressed: null),
+            onPressed: namePage != 'home'
+                ? () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(
+                          idPersona: idPersona,
+                        ),
+                      ),
+                    );
+                  }
+                : null),
         IconButton(
           icon: const Icon(
             Icons.chat,
             color: Colors.white,
           ),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ChatListPage(),
-              ),
-            );
-          },
+          onPressed: namePage != 'chatList'
+              ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ChatListPage(),
+                    ),
+                  );
+                }
+              : null,
         ),
         IconButton(
           icon: const Icon(
             Icons.person,
             color: Colors.white,
           ),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(
-                  idPersona: idPersona,
-                ),
-              ),
-            );
-          },
+          onPressed: namePage != 'profile'
+              ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        idPersona: idPersona,
+                      ),
+                    ),
+                  );
+                }
+              : null,
         ),
       ],
     );

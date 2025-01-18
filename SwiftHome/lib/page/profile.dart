@@ -5,10 +5,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
+import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/registration_step_third.dart';
 import 'package:swifthome/widget/appbarStart.dart';
+import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
+import 'package:swifthome/widget/snackBar_%20personalized.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.idPersona});
@@ -131,7 +134,10 @@ class _ProfilePagePageState extends State<ProfilePage> {
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
         preferredSize: Size(20, 50),
-        child: AppbarStart(page: 'profile'),
+        child: AppbarAlreadyRegistered(
+          namePage: 'profile',
+          idPersona: widget.idPersona,
+        ),
       ),
       body: DefaultTabController(
         length: 2,
@@ -169,7 +175,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
                               ],
                             ),
                             Container(
-                              height: 1200,
+                              height: 1000,
                               child: TabBarView(
                                 physics: BouncingScrollPhysics(),
                                 children: [
@@ -384,14 +390,21 @@ class _ProfilePagePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(top: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.grey[600],
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   minimumSize: Size(double.infinity, 50),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (context) => LeadingPage(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
                 child: Text("Cerrar sesión"),
               ),
             ),
@@ -399,14 +412,79 @@ class _ProfilePagePageState extends State<ProfilePage> {
               padding: const EdgeInsets.only(top: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: Color.fromRGBO(255, 0, 0, 0.8),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                   minimumSize: Size(double.infinity, 50),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible:
+                        true, // Permite cerrar el diálogo tocando fuera
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        title: Text("Confirmar eliminación"),
+                        content: Text(
+                            "¿Estás seguro de que deseas eliminar tu cuenta?"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Cierra el diálogo
+                            },
+                            child: Text(
+                              "No",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              Map<String, dynamic>? comprobarEliminacion =
+                                  await deleteUsuario(
+                                      widget.idPersona.toString());
+                              if (comprobarEliminacion != null) {
+                                if (comprobarEliminacion['status'] == 1) {
+                                  mostrarSnackBar(
+                                      context,
+                                      comprobarEliminacion['mensaje']
+                                          .toString());
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                      builder: (context) => LeadingPage(),
+                                    ),
+                                    (Route<dynamic> route) => false,
+                                  );
+                                } else {
+                                  mostrarSnackBar(
+                                      context,
+                                      comprobarEliminacion['mensaje']
+                                          .toString());
+                                }
+                              } else {
+                                mostrarSnackBar(
+                                    context, "Error al subir las imagenes");
+                              }
+                              /*SnackbarPersonalized(title: "Cuenta eliminada")
+                                  .show(context);
+                              */
+                            },
+                            child: Text(
+                              "Sí",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 child: Text("Eliminar cuenta"),
               ),
             ),
@@ -552,7 +630,7 @@ Future<Map<String, dynamic>?> getImagenesUsuario(String idUsuario) async {
 Future<Map<String, dynamic>?> updateImagenes(
   int perfilId,
   List<Imagen?> imagenes,
-) {
+) async {
   String url =
       '${ClassConstant.ipBaseDatos}${ClassConstant.urlImagenesActualizar}';
 
@@ -560,4 +638,12 @@ Future<Map<String, dynamic>?> updateImagenes(
   NetworkEnviarImagenes network = NetworkEnviarImagenes(url, perfilId,
       imagenes); // NetworkEnviarImagenes(url, perfilId, imagenes);
   return network.fetchData();
+}
+
+Future<Map<String, dynamic>?> deleteUsuario(String idUsuario) async {
+  String url =
+      '${ClassConstant.ipBaseDatos}${ClassConstant.urlEliminarUsuario}';
+  final user = {"idUsuario": idUsuario};
+  NetworkProfile network = NetworkProfile(url, user);
+  return network.deleteProfile();
 }

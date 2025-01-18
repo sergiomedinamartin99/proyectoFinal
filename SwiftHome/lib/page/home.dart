@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'package:swifthome/widget/appbarStart.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,7 +34,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
           preferredSize: Size(20, 50),
-          child: AppbarAlreadyRegistered(idPersona: widget.idPersona)),
+          child: AppbarAlreadyRegistered(
+              namePage: 'home', idPersona: widget.idPersona)),
       body: SafeArea(
         child: Center(
           child: Column(
