@@ -9,7 +9,14 @@ CREATE TABLE Usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     correo VARCHAR(150) NOT NULL UNIQUE,
     contrasena VARCHAR(255) NOT NULL,
-    fechaRegistro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fechaRegistro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    esAdministrador BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- Tabla de cuentas bloqueadas
+CREATE TABLE CuentasBloqueadas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    correo VARCHAR(150) NOT NULL UNIQUE
 );
 
 -- Tabla de perfiles
@@ -20,11 +27,28 @@ CREATE TABLE Perfil (
     apellidos VARCHAR(100) NOT NULL,
     fecha_nacimiento date,
     telefono INT NOT NULL,
-    genero ENUM('Masculino', 'Femenino') NOT NULL,
-    buscandoPiso BOOLEAN NOT NULL,
-    biografia TEXT,
+    genero ENUM('Masculino', 'Femenino', 'No binario') NOT NULL,
     ubicacion VARCHAR(255) NOT NULL,
+    buscandoPiso BOOLEAN NOT NULL,
     FOREIGN KEY (usuarioId) REFERENCES Usuario(id) ON DELETE CASCADE
+);
+
+-- SI ES TRUE EL BUSCANDO PISO
+CREATE TABLE Buscador (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    perfilId INT NOT NULL,
+    ocupacion VARCHAR(100),
+	biografia TEXT NOT NULL,
+    FOREIGN KEY (perfilId) REFERENCES Perfil(id) ON DELETE CASCADE
+);
+
+-- SI ES FALSE EL BUSCANDO PISO
+CREATE TABLE Propietario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    perfilId INT NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL,
+    descripcionVivienda TEXT NOT NULL,
+    FOREIGN KEY (perfilId) REFERENCES Perfil(id) ON DELETE CASCADE
 );
 
 -- Tabla de likes

@@ -33,7 +33,7 @@ function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNaci
                 $resultado->bindParam(":ocupacion", $ocupacion);
                 $resultado->bindParam(":biografia", $biografia);
             } else if ($buscandoPiso == 0) {
-                $resultado = $conexion->prepare("INSERT INTO Propietario (perfilId, precio, descripcion_vivienda) VALUES (:perfilId, :precio, :descripcionVivienda)");
+                $resultado = $conexion->prepare("INSERT INTO Propietario (perfilId, precio, descripcionVivienda) VALUES (:perfilId, :precio, :descripcionVivienda)");
                 $resultado->bindParam(":perfilId", $perfilId);
                 $resultado->bindParam(":precio", $precio);
                 $resultado->bindParam(":descripcionVivienda", $descripcionVivienda);
