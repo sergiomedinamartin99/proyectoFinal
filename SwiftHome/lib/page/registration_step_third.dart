@@ -1,8 +1,11 @@
 import 'dart:typed_data';
-
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image/image.dart' as img;
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_insert_data.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
@@ -53,66 +56,122 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
   final _formularioRegistroStepThird = GlobalKey<FormState>();
   bool showValidationText = false;
   String validationMessage = "";
-  final List<Imagen?> _imagenes =
-      List.filled(9, null); // Lista de 9 imágenes o vacías
 
+  // Lista de 9 imágenes (cada posición puede ser null si no hay imagen).
+  final List<Imagen?> _imagenes = List.filled(9, null);
+
+  // ---------------
+  // FUNCIÓN MODIFICADA
+  // ---------------
   Future<void> _seleccionarImagen(int indice) async {
     final ImagePicker selector = ImagePicker();
     final XFile? imagenSeleccionada =
         await selector.pickImage(source: ImageSource.gallery);
+
     if (imagenSeleccionada != null) {
-      // Extraer el nombre del archivo e información del tipo
-      final String nombreImagen =
-          imagenSeleccionada.name.split('.')[0]; // Nombre de la imagen
-      String tipoMime = '';
-      String extensionImagen = '';
-      if (imagenSeleccionada.mimeType != null) {
-        tipoMime = imagenSeleccionada.mimeType!.split('/').last;
-        extensionImagen = imagenSeleccionada.mimeType!;
+      // === PASO 1: Abrimos el cropper para recortar/forzar dimensiones ===
+      final CroppedFile? imagenRecortada = await ImageCropper().cropImage(
+        sourcePath: imagenSeleccionada.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 100,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Recortar imagen',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor:
+                Colors.black, // Cambia los controles activos
+            cropFrameColor: Colors.black, // Color del marco
+            cropGridColor: Colors.black, // Color de la cuadrícula
+            backgroundColor: Colors.black, // Fondo negro
+            dimmedLayerColor: Colors.black, // Capa oscura
+          ),
+          IOSUiSettings(
+            title: 'Recortar imagen',
+            aspectRatioLockEnabled: true, // Bloquea la relación de aspecto
+            aspectRatioPickerButtonHidden: true,
+          ),
+          WebUiSettings(
+            context: context,
+            presentStyle: WebPresentStyle.dialog,
+            size: const CropperSize(
+              width: 500,
+              height: 500,
+            ),
+            cropBoxResizable:
+                false, // No permite redimensionar el área de recorte
+            dragMode: WebDragMode.move,
+            translations: WebTranslations(
+              title: "Ajustar imagen",
+              rotateLeftTooltip: "Rotar izquierda",
+              rotateRightTooltip: "Rotar derecha",
+              cancelButton: "Cancelar",
+              cropButton: "Recortar",
+            ),
+            themeData: WebThemeData(
+              rotateIconColor: Colors.black,
+            ),
+          ),
+        ],
+        aspectRatio:
+            const CropAspectRatio(ratioX: 5, ratioY: 7), // Relación 5:7
+      );
+
+      // === PASO 2: Si el recorte no se canceló, redimensionamos a 500x700 ===
+      if (imagenRecortada != null) {
+        final Uint8List bytesImagen = await imagenRecortada.readAsBytes();
+        final img.Image? imagenOriginal = img.decodeImage(bytesImagen);
+
+        if (imagenOriginal != null) {
+          // Redimensionamos la imagen a 500x700
+          final img.Image imagenRedimensionada =
+              img.copyResize(imagenOriginal, width: 500, height: 700);
+
+          // Convertimos la imagen redimensionada a bytes
+          final Uint8List bytesRedimensionados =
+              Uint8List.fromList(img.encodeJpg(imagenRedimensionada));
+
+          // Extraemos nombre y tipo MIME
+          final String nombreImagen =
+              imagenSeleccionada.name.split('.')[0]; // nombre base
+          String tipoMime =
+              imagenSeleccionada.mimeType?.split('/').last ?? 'jpg';
+
+          // Actualizamos el estado
+          setState(() {
+            int primerIndiceNulo =
+                _imagenes.indexWhere((imagen) => imagen == null);
+            if (primerIndiceNulo != -1) {
+              indice = primerIndiceNulo;
+            }
+            if (_imagenes[indice] == null) {
+              _imagenes[indice] = Imagen('', '', Uint8List(0));
+            }
+            _imagenes[indice]!.data = bytesRedimensionados;
+            _imagenes[indice]!.nombre = nombreImagen;
+            _imagenes[indice]!.tipo = tipoMime;
+          });
+        }
       } else {
-        tipoMime = 'Desconocido';
-      }
-      if (extensionImagen != '' && extensionImagen.startsWith('image/')) {
-        final Uint8List bytesImagen = await imagenSeleccionada.readAsBytes();
-        setState(() {
-          // Buscar la primera posición nula
-          int primerIndiceNulo =
-              _imagenes.indexWhere((imagen) => imagen == null);
-          if (primerIndiceNulo != -1) {
-            indice = primerIndiceNulo;
-          }
-          if (_imagenes[indice] == null) {
-            _imagenes[indice] = Imagen('', '', Uint8List(0));
-          }
-          _imagenes[indice]!.data = bytesImagen;
-          _imagenes[indice]!.nombre = nombreImagen;
-          _imagenes[indice]!.tipo = tipoMime;
-        });
-      } else {
-        setState(() {
-          showValidationText = true;
-          validationMessage = "Por favor, selecciona un archivo de imagen.";
-        });
-        return;
+        debugPrint("Recorte cancelado por el usuario");
       }
     }
   }
 
   void _removeImage(int index) {
     setState(() {
-      _imagenes[index] = null; // Eliminar la imagen de la posición específica
+      _imagenes[index] = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(243, 244, 246, 1),
+      backgroundColor: const Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
-          preferredSize: Size(20, 50),
-          child: AppbarStart(
-            page: 'registration',
-          )),
+        preferredSize: const Size(20, 50),
+        child: AppbarStart(page: 'registration'),
+      ),
       body: LayoutBuilder(builder: (context, constraints) {
         return SingleChildScrollView(
           controller: _scrollController,
@@ -136,41 +195,40 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                             BorderRadius.circular(10), // Bordes redondeados
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(
-                            16.0), // Espaciado interno del card
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: [
                             Form(
                               key: _formularioRegistroStepThird,
                               child: Column(
                                 children: [
-                                  Text(
-                                    "Sube tus imagenes",
+                                  const Text(
+                                    "Sube tus imágenes",
                                     style: TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.w900,
                                     ),
                                   ),
-                                  Text(
-                                      "Paso 3 de 3: Añade imagenes a tu perfil"),
+                                  const Text(
+                                      "Paso 3 de 3: Añade imágenes a tu perfil"),
                                   labelForm(
                                     title: widget.buscandoPiso
-                                        ? "Sube imagenes tuyas (máximo 9)"
-                                        : "Sube imagenes de tu vivienda (máximo 9)",
+                                        ? "Sube imágenes tuyas (máximo 9)"
+                                        : "Sube imágenes de tu vivienda (máximo 9)",
                                   ),
                                   SizedBox(
                                     width: 400,
                                     height: 400,
                                     child: GridView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 3, // Tres columnas
                                         mainAxisSpacing: 8,
                                         crossAxisSpacing: 8,
                                       ),
-                                      itemCount:
-                                          9, // Siempre muestra 9 cuadrículas
+                                      itemCount: 9, // Siempre 9 casillas
                                       itemBuilder: (context, index) {
                                         if (_imagenes[index] != null) {
                                           return Stack(
@@ -188,32 +246,31 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                                     Icons.close,
                                                     color: Colors.red,
                                                   ),
-                                                  onPressed: () => _removeImage(
-                                                      index), // Eliminar imagen
+                                                  onPressed: () =>
+                                                      _removeImage(index),
                                                 ),
                                               ),
                                             ],
                                           );
                                         } else {
-                                          // Si no hay imagen, mostrar botón para añadir
                                           return MaterialButton(
-                                              onPressed: () => _seleccionarImagen(
-                                                  index), // Añadir imagen en esa posición
-                                              color: Colors.grey[
-                                                  300], // Color de fondo del botón
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        5), // Bordes redondeados
-                                                side: const BorderSide(
-                                                    color: Colors.black26,
-                                                    width: 1),
-                                              ),
-                                              child: const Center(
-                                                  child: Icon(
+                                            onPressed: () =>
+                                                _seleccionarImagen(index),
+                                            color: Colors.grey[300],
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              side: const BorderSide(
+                                                  color: Colors.black26,
+                                                  width: 1),
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
                                                 Icons.add,
                                                 color: Colors.black,
-                                              )));
+                                              ),
+                                            ),
+                                          );
                                         }
                                       },
                                     ),
@@ -224,7 +281,8 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                       visible: showValidationText,
                                       child: Text(
                                         validationMessage,
-                                        style: TextStyle(color: Colors.red),
+                                        style:
+                                            const TextStyle(color: Colors.red),
                                       ),
                                     ),
                                   ),
@@ -238,10 +296,11 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                           borderRadius:
                                               BorderRadius.circular(8),
                                         ),
-                                        minimumSize: Size(double.infinity, 50),
+                                        minimumSize:
+                                            const Size(double.infinity, 50),
                                       ),
                                       onPressed: () async {
-                                        // Comprobar si todas las imágenes son nulas - Si un campo no es nulo se puede registrar
+                                        // Comprobar si todas las imágenes son nulas
                                         bool allImagesNull = _imagenes
                                             .every((image) => image == null);
                                         if (allImagesNull) {
@@ -253,13 +312,13 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                           return;
                                         }
 
-                                        // Validar el tamaño de las imágenes (5 MB = 5 * 1024 * 1024 bytes)
+                                        // Validar el tamaño de las imágenes (5 MB)
                                         bool hasLargeImages = _imagenes.any(
-                                            (image) =>
-                                                image != null &&
-                                                image!.data.lengthInBytes >
-                                                    5 * 1024 * 1024);
-
+                                          (image) =>
+                                              image != null &&
+                                              image.data.lengthInBytes >
+                                                  5 * 1024 * 1024,
+                                        );
                                         if (hasLargeImages) {
                                           setState(() {
                                             showValidationText = true;
@@ -269,11 +328,12 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                           return;
                                         }
 
-                                        // Si todo es válido, oculta el mensaje de validación
+                                        // Todo OK, ocultamos el mensaje si estaba visible.
                                         setState(() {
                                           showValidationText = false;
                                         });
 
+                                        // Llamamos a la inserción en BD:
                                         if (!showValidationText) {
                                           Map<String, dynamic>? comprobar =
                                               await insertarDatosUsuario(
@@ -291,6 +351,7 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                             widget.precio,
                                             widget.descripcionVivienda,
                                           );
+
                                           if (comprobar != null &&
                                               _imagenes.isNotEmpty) {
                                             if (comprobar['status'] == 1) {
@@ -313,7 +374,6 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                                       comprobarImagenes[
                                                               'mensaje']
                                                           .toString());
-
                                                   Navigator.of(context)
                                                       .pushAndRemoveUntil(
                                                     MaterialPageRoute(
@@ -336,7 +396,7 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                                 }
                                               } else {
                                                 mostrarSnackBar(context,
-                                                    "Error al subir las imagenes");
+                                                    "Error al subir las imágenes");
                                               }
                                             } else {
                                               mostrarSnackBar(
@@ -350,7 +410,7 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                           }
                                         }
                                       },
-                                      child: Text("Registrarse"),
+                                      child: const Text("Registrarse"),
                                     ),
                                   ),
                                 ],
@@ -373,6 +433,7 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
   }
 }
 
+// Clase para manejar imágenes
 class Imagen {
   String nombre;
   String tipo;
@@ -381,6 +442,9 @@ class Imagen {
   Imagen(this.nombre, this.tipo, this.data);
 }
 
+// -------------------------------
+// FUNCIONES DE INSERCIÓN EN BACKEND
+// -------------------------------
 Future<Map<String, dynamic>?> insertarDatosUsuario(
   String nombre,
   String apellidos,
@@ -396,10 +460,9 @@ Future<Map<String, dynamic>?> insertarDatosUsuario(
   String precio,
   String descripcionVivienda,
 ) {
-  // Parse the input date string
+  // Parseamos la fecha recibida
   DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(fechaNacimiento);
-
-  // Format the date to the desired format
+  // Formateamos a 'yyyy-MM-dd'
   String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
 
   String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlRegistro}';
@@ -428,10 +491,11 @@ Future<Map<String, dynamic>?> insertImagenes(
   List<Imagen?> imagenes,
 ) {
   String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlArchivo}';
-
-  print(imagenes.toString());
-  NetworkEnviarImagenes network = NetworkEnviarImagenes(url, perfilId,
-      imagenes); // NetworkEnviarImagenes(url, perfilId, imagenes);
+  NetworkEnviarImagenes network = NetworkEnviarImagenes(
+    url,
+    perfilId,
+    imagenes,
+  );
   return network.fetchData();
 }
 
@@ -440,13 +504,8 @@ void mostrarSnackBar(BuildContext context, String mensaje) {
     content: Text(mensaje),
     action: SnackBarAction(
       label: 'Cerrar',
-      onPressed: () {
-        // Some code to undo the change.
-      },
+      onPressed: () {},
     ),
   );
-
-  // Find the ScaffoldMessenger in the widget tree
-  // and use it to show a SnackBar.
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }

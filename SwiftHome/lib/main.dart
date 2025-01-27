@@ -5,6 +5,7 @@ import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/login.dart';
 import 'package:swifthome/page/profile.dart';
 import 'package:swifthome/page/registration_step_one.dart';
+import 'package:swifthome/page/registration_step_third.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,24 +20,33 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(), // Define el borde del campo de texto
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderSide: BorderSide(color: Colors.black, width: 1.0),
+            ),
+          ),
+          canvasColor: const Color(0xFFFDF5EC),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor:
+                  WidgetStateColor.resolveWith((states) => Colors.black),
+              foregroundColor:
+                  WidgetStateColor.resolveWith((states) => Colors.white),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: ButtonStyle(
+              foregroundColor: WidgetStateColor.resolveWith(
+                (states) => Colors.black,
+              ),
+            ),
+          ),
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: Colors.black,
+          ),
+          useMaterial3: true),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -46,9 +56,24 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
-      home: const HomePage(
+      /*home: const HomePage(
         idPersona: 1,
-      ),
+      ),*/
+
+      home: const RegistrationStepThirdPage(
+          correoElectronico: "sergio@sergio.es",
+          contrasena: "1234",
+          nombre: "sergio",
+          apellidos: "medina",
+          fechaNacimiento: "1999-01-01",
+          telefono: "644343423",
+          genero: "Masculino",
+          ciudad: "Valladolid",
+          buscandoPiso: true,
+          ocupacion: "Ingeniero",
+          biografia: "qwe",
+          precio: "q1222",
+          descripcionVivienda: "qwe"),
     );
   }
 }
