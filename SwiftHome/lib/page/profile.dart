@@ -271,6 +271,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
                 value: generoSeleccionado,
                 validator: (value) {
                   if (value == null) {
@@ -298,6 +299,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
                 value: ciudadSeleccionada,
                 validator: (value) {
                   if (value == null) {
@@ -325,6 +327,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerLeft,
               child: DropdownButtonFormField<bool>(
+                dropdownColor: Colors.white,
                 validator: (value) {
                   if (value == null) {
                     return 'Por favor, selecciona el tipo de búsqueda';

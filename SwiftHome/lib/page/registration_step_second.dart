@@ -300,6 +300,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<String>(
+                                      dropdownColor: Colors.white,
                                       isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
@@ -345,6 +346,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<String>(
+                                      dropdownColor: Colors.white,
                                       isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
@@ -390,6 +392,7 @@ class _RegistrationStepSecondPageState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<bool>(
+                                      dropdownColor: Colors.white,
                                       isExpanded: true,
                                       decoration: const InputDecoration(
                                         border: OutlineInputBorder(
@@ -445,6 +448,7 @@ class _RegistrationStepSecondPageState
                                               alignment: Alignment.topLeft,
                                               child: DropdownButtonFormField<
                                                   String>(
+                                                dropdownColor: Colors.white,
                                                 isExpanded: true,
                                                 decoration:
                                                     const InputDecoration(
