@@ -23,14 +23,45 @@ function getUsuarioPorCorreo($correo) {
     }
 }
 
+function getUsuarioBloqueado($correo) {
+    try {
+        $conexion = getConexion();
+        if ($conexion != null) {
+            $resultado = $conexion->prepare("SELECT * FROM CuentasBloqueadas WHERE correo = :correo");
+            $resultado->bindParam(":correo", $correo);
+            $resultado->execute();
+            $usuarioBloqueado = $resultado->fetch(PDO::FETCH_ASSOC);
+            if ($usuarioBloqueado != null) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    } catch (Exception $ex) {
+        return false;
+    } finally {
+        $conexion = null;
+    }
+}
+
 $correo = $_POST["correo"];
 
-$comprobarExistenciaCorreo = getUsuarioPorCorreo($correo);
 
-if (!$comprobarExistenciaCorreo) {
-    echo json_encode(["status" => 1, "mensaje" => "No existe el usuario."]);
+$comprobarExistenciaBloqueo = getUsuarioBloqueado($correo);
+
+if (!$comprobarExistenciaBloqueo) {
+    $comprobarExistenciaCorreo = getUsuarioPorCorreo($correo);
+
+    if (!$comprobarExistenciaCorreo) {
+        echo json_encode(["status" => 1, "mensaje" => "No existe el usuario."]);
+    } else {
+        echo json_encode(["status" => 0, "mensaje" => "Existen el usuario."]);
+    }
 } else {
-    echo json_encode(["status" => 0, "mensaje" => "Existen el usuario."]);
+    echo json_encode(["status" => 2, "mensaje" => "Usuario bloqueado."]);
 }
+
+
+
 
 ?>

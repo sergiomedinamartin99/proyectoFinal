@@ -7,11 +7,9 @@ import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
 import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/registration_step_third.dart';
-import 'package:swifthome/widget/appbarStart.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
-import 'package:swifthome/widget/snackBar_%20personalized.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key, required this.idPersona});

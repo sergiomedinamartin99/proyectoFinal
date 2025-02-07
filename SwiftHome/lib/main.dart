@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:swifthome/page/home.dart';
-import 'package:swifthome/page/leading.dart';
-import 'package:swifthome/page/login.dart';
-import 'package:swifthome/page/profile.dart';
-import 'package:swifthome/page/registration_step_one.dart';
 import 'package:swifthome/page/registration_step_third.dart';
 
 void main() {

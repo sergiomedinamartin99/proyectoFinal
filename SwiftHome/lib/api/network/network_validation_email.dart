@@ -8,7 +8,7 @@ class NetworkValidationEmail {
   final Map<String, String> mapa;
   NetworkValidationEmail(this.url, this.mapa);
 
-  Future<bool> fetchEmail() async {
+  Future<String> fetchEmail() async {
     debugPrint(url);
     debugPrint("$mapa");
     Response response = await post(Uri.parse(url), body: mapa);
@@ -17,14 +17,17 @@ class NetworkValidationEmail {
       var responseJson = json.decode(response.body);
       if (responseJson['status'] == 1) {
         debugPrint("Correcto, no existe el correo en la base de datos");
-        return false;
-      } else {
+        return "dontExist";
+      } else if (responseJson['status'] == 0) {
         debugPrint("Correcto, no existe el correo en la base de datos");
-        return true;
+        return "exist";
+      } else {
+        debugPrint("Correcto, el usuario esta bloqueado");
+        return "block";
       }
     } else {
       debugPrint("Error: ${response.statusCode}");
-      return false;
+      return "error";
     }
   }
 }

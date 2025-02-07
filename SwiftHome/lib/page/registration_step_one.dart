@@ -6,6 +6,7 @@ import 'package:swifthome/page/registration_step_second.dart';
 import 'package:swifthome/widget/appbarStart.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
+import 'package:swifthome/widget/snackBar_%20personalized.dart';
 
 class RegistrationStepOnePage extends StatefulWidget {
   const RegistrationStepOnePage({super.key});
@@ -233,8 +234,10 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                         if (_formularioRegistroStepOne
                                             .currentState!
                                             .validate()) {
-                                          if (!await validarExistenciaEmail(
-                                              _controllerCorreo.text)) {
+                                          String validarEmail =
+                                              await validarExistenciaEmail(
+                                                  _controllerCorreo.text);
+                                          if (validarEmail == "dontExist") {
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (context) =>
@@ -248,7 +251,7 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                                                 .trim()),
                                               ),
                                             );
-                                          } else {
+                                          } else if (validarEmail == "exist") {
                                             showDialog(
                                               context: context,
                                               barrierDismissible:
@@ -287,6 +290,35 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                                 );
                                               },
                                             );
+                                          } else if (validarEmail == "block") {
+                                            showDialog(
+                                              context: context,
+                                              barrierDismissible:
+                                                  true, // Permite cerrar el diálogo tocando fuera de él
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text(
+                                                      "¡Correo electrónico bloqueado!"),
+                                                  content: Text(
+                                                      "El correo electrónico ingresado está bloqueado. Por favor, ponte en contacto con el administrador para apelar la decisión."),
+                                                  actions: <Widget>[
+                                                    // Botón para cerrar el diálogo
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(); // Cierra el diálogo
+                                                      },
+                                                      child: Text("Cerrar"),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          } else if (validarEmail == "error") {
+                                            SnackbarPersonalized(
+                                                    title:
+                                                        'Error en la conexión. Por favor, inténtalo de nuevo.')
+                                                .show(context);
                                           }
                                         }
                                       },
@@ -313,7 +345,7 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
   }
 }
 
-Future<bool> validarExistenciaEmail(
+Future<String> validarExistenciaEmail(
   String correo,
 ) {
   String url = '${ClassConstant.ipBaseDatos}${ClassConstant.urlExisteCorreo}';
