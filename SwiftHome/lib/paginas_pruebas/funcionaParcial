@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.idPersona});
+class HomePageFuncionaParcial extends StatefulWidget {
+  const HomePageFuncionaParcial({super.key, required this.idPersona});
 
   final int idPersona;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageFuncionaParcial> createState() => _HomePageFuncionaParcialState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageFuncionaParcialState extends State<HomePageFuncionaParcial> {
   final CardSwiperController controller = CardSwiperController();
 
   List<Personas> listPersonas = [

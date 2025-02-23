@@ -13,5 +13,13 @@ class ClassConstant {
   static const String urlImagenesActualizar =
       '/ProyectoFinal/php/DAO/imagenesActualizar.php';
   static const String urlEliminarUsuario =
-      '/ProyectoFinal/php/DAO/eliminarUsuario.php';
+      '/ProyectoFinal/php/DAO/deleteUserRoomSwipe.php';
+  static const String urlUserRoomSwipe =
+      '/ProyectoFinal/php/DAO/userRoomSwipe.php';
+  static const String urlBlockUserRoomSwipe =
+      '/ProyectoFinal/php/DAO/blockUserRoomSwipe.php';
+  static const String urlPanelUserProfile =
+      '/ProyectoFinal/php/DAO/panelUserProfileRoomSwipe.php';
+  static const String urlLikeDislikeBuscador =
+      '/ProyectoFinal/php/DAO/likeDislikeBuscador.php';
 }

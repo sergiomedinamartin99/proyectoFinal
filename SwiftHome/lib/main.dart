@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:swifthome/page/panelAdmin.dart';
+import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/registration_step_third.dart';
 
 void main() {
@@ -51,11 +53,11 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
-      /*home: const HomePage(
+      home: HomePage(
         idPersona: 1,
-      ),*/
+      ),
 
-      home: const RegistrationStepThirdPage(
+      /*home: const RegistrationStepThirdPage(
           correoElectronico: "sergio@sergio.es",
           contrasena: "1234",
           nombre: "sergio",
@@ -68,7 +70,11 @@ class MyApp extends StatelessWidget {
           ocupacion: "Ingeniero",
           biografia: "qwe",
           precio: "q1222",
-          descripcionVivienda: "qwe"),
+          descripcionVivienda: "qwe"),*/
+
+      /*home: const PanelAdminPage(
+        idPersona: 1,
+      ),*/
     );
   }
 }

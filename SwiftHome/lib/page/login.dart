@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_check.dart';
+import 'package:swifthome/page/panelAdmin.dart';
 import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/registration_step_one.dart';
 import 'package:swifthome/widget/appbarStart.dart';
@@ -145,20 +146,37 @@ class _LoginPageState extends State<LoginPage> {
 
                                           if (check != null) {
                                             if (check['status'] == 1) {
-                                              SnackbarPersonalized(
-                                                      title: check['mensaje'])
-                                                  .show(context);
-                                              Navigator.of(context)
-                                                  .pushAndRemoveUntil(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      HomePage(
-                                                    idPersona:
-                                                        check['usuarioId'],
+                                              if (check["admin"] == 0) {
+                                                SnackbarPersonalized(
+                                                        title: check['mensaje'])
+                                                    .show(context);
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        HomePage(
+                                                      idPersona:
+                                                          check['usuarioId'],
+                                                    ),
                                                   ),
-                                                ),
-                                                (Route<dynamic> route) => false,
-                                              );
+                                                  (Route<dynamic> route) =>
+                                                      false,
+                                                );
+                                              } else if (check["admin"] == 1) {
+                                                // REPLANTEAR SI PASAR EL ID DEL ADMINISTRADOR
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PanelAdminPage(
+                                                      idPersona:
+                                                          check['usuarioId'],
+                                                    ),
+                                                  ),
+                                                  (Route<dynamic> route) =>
+                                                      false,
+                                                );
+                                              }
                                             } else {
                                               SnackbarPersonalized(
                                                       title: check['mensaje'])

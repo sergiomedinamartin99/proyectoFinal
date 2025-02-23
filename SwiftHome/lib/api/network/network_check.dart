@@ -13,6 +13,7 @@ class NetworkCheck {
     Response response = await post(Uri.parse(url), body: mapa);
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
+      debugPrint("Response: $responseData");
       return responseData;
     } else {
       debugPrint("Error: ${response.statusCode}");

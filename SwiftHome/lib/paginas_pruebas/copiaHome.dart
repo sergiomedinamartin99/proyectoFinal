@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.idPersona});
+class HomePageCopia extends StatefulWidget {
+  const HomePageCopia({super.key, required this.idPersona});
 
   final int idPersona;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePageCopia> createState() => _HomePageCopiaState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageCopiaState extends State<HomePageCopia> {
   final CardSwiperController controller = CardSwiperController();
   final ScrollController scrollController =
       ScrollController(); // Añade un ScrollController separado
