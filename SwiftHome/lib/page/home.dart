@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   int indexCurrent = 2;
   bool checkUploadedData = false;
   bool noMoreCards = false;
+
   @override
   void initState() {
     super.initState();
@@ -303,18 +304,31 @@ class _PersonaCardState extends State<PersonaCard>
   }
 
   /// Indicador de páginas para el carrusel de imágenes
-  Widget buildPageIndicator() {
+  Widget buildLineIndicator() {
+    int totalImages = widget.persona.imagenes.length;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(widget.persona.imagenes.length, (index) {
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-          width: _currentIndex == index ? 12.0 : 8.0,
-          height: _currentIndex == index ? 12.0 : 8.0,
-          decoration: BoxDecoration(
-            color: _currentIndex == index ? Colors.white : Colors.white54,
-            shape: BoxShape.circle,
+      children: List.generate(totalImages, (index) {
+        return Expanded(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _currentIndex = index;
+              });
+              _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 2.0),
+              height: 4.0,
+              decoration: BoxDecoration(
+                color: index == _currentIndex ? Colors.white : Colors.white54,
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+            ),
           ),
         );
       }),
@@ -355,33 +369,59 @@ class _PersonaCardState extends State<PersonaCard>
               });
             },
           ),
-          // Flecha izquierda
-          Positioned(
-            left: 16,
-            top: 0,
-            bottom: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white, size: 30),
-              onPressed: _prevImage,
+          // Flecha izquierda: se muestra si no es la primera imagen
+          if (_currentIndex > 0)
+            Positioned(
+              left: 16,
+              top: 0,
+              bottom: 0,
+              child: Align(
+                alignment:
+                    Alignment.centerLeft, // O alignment: Alignment.center
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back,
+                        color: Colors.white, size: 30),
+                    onPressed: _prevImage,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                  ),
+                ),
+              ),
             ),
-          ),
-          // Flecha derecha
-          Positioned(
-            right: 16,
-            top: 0,
-            bottom: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_forward,
-                  color: Colors.white, size: 30),
-              onPressed: _nextImage,
+
+          if (_currentIndex < widget.persona.imagenes.length - 1)
+            Positioned(
+              right: 16,
+              top: 0,
+              bottom: 0,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_forward,
+                        color: Colors.white, size: 30),
+                    onPressed: _nextImage,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                  ),
+                ),
+              ),
             ),
-          ),
           // Indicador de páginas
           Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
-            child: buildPageIndicator(),
+            top: 16,
+            left: 16,
+            right: 16,
+            child: buildLineIndicator(),
           ),
         ],
       ),
@@ -442,6 +482,7 @@ class _PersonaCardState extends State<PersonaCard>
 
   @override
   Widget build(BuildContext context) {
+    bool _isHoverButtonExpand = false;
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -449,27 +490,48 @@ class _PersonaCardState extends State<PersonaCard>
       ),
       child: Stack(
         children: [
-          // Dependiendo del estado, se muestra el contenido expandido o solo la imagen
+          // Contenido expandido o colapsado
           Positioned.fill(
             child:
                 isExpanded ? buildExpandedContent() : buildCollapsedContent(),
           ),
-          // Botón de expandir/contraer en la esquina inferior derecha
+
+          // Indicador en la parte superior (a modo "Tinder")
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: buildLineIndicator(),
+          ),
+
+          // Botón de expandir/contraer
           Positioned(
             bottom: 16,
             right: 16,
-            child: FloatingActionButton(
-              mini: true,
-              onPressed: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
-              },
-              child: Icon(
-                isExpanded ? Icons.expand_less : Icons.expand_more,
+            child: MouseRegion(
+              onEnter: (_) => setState(() => _isHoverButtonExpand = true),
+              onExit: (_) => setState(() => _isHoverButtonExpand = false),
+              child: AnimatedScale(
+                scale:
+                    _isHoverButtonExpand ? 1.2 : 1.0, // Escala al hacer hover
+                duration: const Duration(milliseconds: 200),
+                child: FloatingActionButton(
+                  mini: true,
+                  backgroundColor: Colors.transparent,
+                  shape: const CircleBorder(), // Asegura la forma circular
+                  onPressed: () {
+                    setState(() {
+                      isExpanded = !isExpanded;
+                    });
+                  },
+                  child: Icon(
+                    isExpanded ? Icons.expand_more : Icons.expand_less,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
