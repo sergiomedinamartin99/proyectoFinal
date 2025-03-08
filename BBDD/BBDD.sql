@@ -125,3 +125,37 @@ CREATE TABLE Imagenes (
     datos LONGBLOB,                              -- Datos binarios de la imagen.
     FOREIGN KEY (perfilId) REFERENCES Perfil(id) ON DELETE CASCADE  -- Si se elimina el perfil, se eliminan sus imágenes.
 );
+
+
+
+DELIMITER $$
+CREATE PROCEDURE getPerfilesRoomSwipe(IN pUsuarioId INT)
+BEGIN
+    DECLARE esBuscador TINYINT;
+
+    -- Averiguamos si es buscador o propietario
+    SELECT buscandoPiso INTO esBuscador
+    FROM perfil
+    WHERE usuarioId = pUsuarioId;
+
+    IF esBuscador = 1 THEN
+		-- Consulta para ver los propietarios de un buscador
+		SELECT p.id, p.nombre, p.apellidos, p.fecha_nacimiento, p.genero, p.ubicacion, pr.precio, pr.descripcionVivienda, i.posicionImagen, i.nombre, i.tipo, i.datos
+                  FROM perfil p
+                  LEFT JOIN propietario pr ON p.id = pr.perfilId
+                  LEFT JOIN imagenes i ON p.id = i.perfilId
+                  WHERE p.ubicacion = (SELECT ubicacion FROM perfil WHERE usuarioId = pUsuarioId) 
+                  AND p.buscandoPiso = 0 AND NOT EXISTS (SELECT 1 FROM Likes l WHERE l.usuarioOrigenId = pUsuarioId AND l.usuarioDestinoId = p.usuarioId)
+                  AND NOT EXISTS (SELECT 1 FROM UserMatch m WHERE (m.usuario1Id = pUsuarioId AND m.usuario2Id = p.usuarioId) OR (m.usuario1Id = p.usuarioId AND m.usuario2Id = pUsuarioId));        
+    ELSE
+		-- Consulta para ver los buscadores que han dado like al propietario
+		SELECT p.id, p.nombre, p.apellidos, p.fecha_nacimiento, p.genero, p.ubicacion, b.ocupacion, b.biografia, i.posicionImagen, i.nombre, i.tipo, i.datos
+		FROM Likes l 
+        JOIN Perfil p ON p.usuarioId = l.usuarioOrigenId
+		LEFT JOIN Buscador b ON b.perfilId = p.id
+		LEFT JOIN Imagenes i ON i.perfilId = p.id
+		WHERE l.usuarioDestinoId = pUsuarioId AND l.tipoInteraccion = TRUE AND NOT EXISTS (SELECT 1 FROM UserMatch m WHERE (m.usuario1Id = pUsuarioId AND m.usuario2Id = l.usuarioOrigenId)
+		OR (m.usuario1Id = l.usuarioOrigenId AND m.usuario2Id = pUsuarioId));
+    END IF;
+END$$
+DELIMITER ;

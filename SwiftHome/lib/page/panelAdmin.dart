@@ -117,7 +117,9 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
                                                   ),
                                                   IconButtonPersonal(
                                                     Icon(Icons.lock),
-                                                    () {},
+                                                    () {
+                                                      print(user['id']);
+                                                    },
                                                   ),
                                                 ],
                                               ))

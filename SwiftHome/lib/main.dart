@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
       home: HomePage(
-        idPersona: 1,
+        idPersona: 2,
       ),
 
       /*home: const RegistrationStepThirdPage(

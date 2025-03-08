@@ -20,6 +20,6 @@ class ClassConstant {
       '/ProyectoFinal/php/DAO/blockUserRoomSwipe.php';
   static const String urlPanelUserProfile =
       '/ProyectoFinal/php/DAO/panelUserProfileRoomSwipe.php';
-  static const String urlLikeDislikeBuscador =
-      '/ProyectoFinal/php/DAO/likeDislikeBuscador.php';
+  static const String urlLikeDislikeMatch =
+      '/ProyectoFinal/php/DAO/likeDislikeMatch.php';
 }

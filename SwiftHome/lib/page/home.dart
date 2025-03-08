@@ -546,15 +546,15 @@ Future<Map<String, dynamic>?> obtenerUserRoomSwipe(String perfilId) async {
 }
 
 Future<Map<String, dynamic>?> insertarLikeDislike(
-  String idUsuario,
-  String idPropietario,
+  String idUsuario1,
+  String idUsuario2,
   String tipoIteracion,
 ) {
   String url =
-      '${ClassConstant.ipBaseDatos}${ClassConstant.urlLikeDislikeBuscador}';
+      '${ClassConstant.ipBaseDatos}${ClassConstant.urlLikeDislikeMatch}';
   final userLikeDislike = {
-    'idUsuario': idUsuario,
-    'idPropietario': idPropietario,
+    'idUsuario1': idUsuario1,
+    'idUsuario2': idUsuario2,
     'tipoIteracion': tipoIteracion,
   };
 

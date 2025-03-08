@@ -5,13 +5,7 @@ function getSwipe($idUsuario) {
     try {
         $conexion = getConexion();
         if ($conexion != null) {
-            $query = "SELECT p.id, p.nombre, p.apellidos, p.fecha_nacimiento, p.genero, pr.precio, pr.descripcionVivienda, i.posicionImagen, i.nombre AS imagen_nombre, i.tipo, i.datos
-                  FROM perfil p
-                  LEFT JOIN propietario pr ON p.id = pr.perfilId
-                  LEFT JOIN imagenes i ON p.id = i.perfilId
-                  WHERE p.ubicacion = (SELECT ubicacion FROM perfil WHERE usuarioId = :id) 
-                  AND p.buscandoPiso = 0 AND NOT EXISTS (SELECT 1 FROM Likes l WHERE l.usuarioOrigenId = :id AND l.usuarioDestinoId = p.usuarioId)
-                  AND NOT EXISTS (SELECT 1 FROM UserMatch m WHERE (m.usuario1Id = :id AND m.usuario2Id = p.usuarioId) OR (m.usuario1Id = p.usuarioId AND m.usuario2Id = :id));";
+            $query = "CALL getPerfilesRoomSwipe(:id);";
     
     
             $stmt = $conexion->prepare($query);
@@ -29,8 +23,8 @@ function getSwipe($idUsuario) {
                         "id" => $fila['id'],
                         "nombre" => $fila['nombre'],
                         "apellidos" => $fila['apellidos'],
-                        "precio" => $fila['precio'] ?? null,
-                        "descripcionVivienda" => $fila['descripcionVivienda'] ?? null,
+                        "precio" => $fila['buscandoPiso'] === 1 ? "" : $fila['precio'],
+                        "descripcionVivienda" => $fila['buscandoPiso'] === 1 ? "" : $fila['descripcionVivienda'],
                         "imagenes" => []
                     ];
                 }
@@ -58,7 +52,7 @@ function getSwipe($idUsuario) {
 }
 
 // Se verifica que se haya enviado el idUsuario vía POST.
-$idUsuario = 1;
+$idUsuario = 2;
 $usuarios = getSwipe($idUsuario);
 
 if ($usuarios) {
