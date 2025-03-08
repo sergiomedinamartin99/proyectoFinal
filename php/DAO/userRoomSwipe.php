@@ -52,7 +52,7 @@ function getSwipe($idUsuario) {
 }
 
 // Se verifica que se haya enviado el idUsuario vía POST.
-$idUsuario = 2;
+$idUsuario = $_POST['idUsuario'];
 $usuarios = getSwipe($idUsuario);
 
 if ($usuarios) {
