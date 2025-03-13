@@ -53,9 +53,9 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(title: 'Flutter Demo Home Page'),
-      home: HomePage(
+      /*home: HomePage(
         idPersona: 1,
-      ),
+      ),*/
 
       /*home: const RegistrationStepThirdPage(
           correoElectronico: "sergio@sergio.es",
@@ -72,9 +72,9 @@ class MyApp extends StatelessWidget {
           precio: "q1222",
           descripcionVivienda: "qwe"),*/
 
-      /*home: const PanelAdminPage(
+      home: const PanelAdminPage(
         idPersona: 1,
-      ),*/
+      ),
     );
   }
 }
