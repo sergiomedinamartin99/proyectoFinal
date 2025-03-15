@@ -46,7 +46,10 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: AppbarAlreadyRegistered(
-            namePage: 'home', idPersona: widget.idPersona),
+          namePage: 'home',
+          idPersona: widget.idPersona,
+          buscandoPiso: true,
+        ),
       ),
       body: DefaultTabController(
         length: 2,

@@ -6,7 +6,11 @@ import 'package:swifthome/page/profile.dart';
 class AppbarAlreadyRegistered extends StatelessWidget {
   String namePage;
   int idPersona;
-  AppbarAlreadyRegistered({required this.namePage, required this.idPersona});
+  bool buscandoPiso;
+  AppbarAlreadyRegistered(
+      {required this.namePage,
+      required this.idPersona,
+      required this.buscandoPiso});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -25,6 +29,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => HomePage(
                 idPersona: idPersona,
+                buscandoPiso: buscandoPiso,
               ),
             ),
           );
@@ -50,6 +55,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => HomePage(
                           idPersona: idPersona,
+                          buscandoPiso: buscandoPiso,
                         ),
                       ),
                     );
@@ -81,6 +87,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(
                         idPersona: idPersona,
+                        buscandoPiso: buscandoPiso,
                       ),
                     ),
                   );

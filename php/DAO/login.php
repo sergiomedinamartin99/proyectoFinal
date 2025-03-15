@@ -7,7 +7,7 @@ function getComprobarUsuario($correo) {
     try {
         $conexion = getConexion();
         if ($conexion != null) {
-            $resultado = $conexion->prepare("SELECT id, contrasena, esAdministrador FROM Usuario WHERE correo=:correo");
+            $resultado = $conexion->prepare("SELECT u.id, u.contrasena, u.esAdministrador, p.buscandoPiso FROM Usuario u, Perfil p WHERE correo=:correo AND u.id = p.usuarioId");
             $resultado->bindParam(":correo", $correo);
             $resultado->execute();
             $usuario = $resultado->fetch();
@@ -31,7 +31,7 @@ $contrasena = $_POST['contrasena'];
 $existeUsuario = getComprobarUsuario($correo);
 if ($existeUsuario) {
     if (password_verify($contrasena, $existeUsuario["contrasena"])) {
-        echo json_encode(["status" => 1, "mensaje" => "Usuario logeado correctamente", "usuarioId" => $existeUsuario["id"], "admin" => $existeUsuario["esAdministrador"]]);
+        echo json_encode(["status" => 1, "mensaje" => "Usuario logeado correctamente", "usuarioId" => $existeUsuario["id"], "admin" => $existeUsuario["esAdministrador"], "buscandoPiso" => $existeUsuario["buscandoPiso"] ? true : false]);
     } else {
         echo json_encode(["status" => 0, "mensaje" => "Error en el correo electrónico y/o en la contraseña"]);
     }

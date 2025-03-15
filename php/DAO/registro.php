@@ -92,7 +92,7 @@ if($comprobarUsuario != null){
 }else{
     $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $ciudad, $buscandoPiso, $ocupacion, $biografia, $precio, $descripcionVivienda);
     if ($usuarioRegistrado) {
-        echo json_encode(["status" => 1, "mensaje" => "Usuario registrado","usuarioId" => "$usuarioId"]);
+        echo json_encode(["status" => 1, "mensaje" => "Usuario registrado","usuarioId" => "$usuarioId","buscandoPiso" => $buscandoPiso ? true : false]);
     } else {
         echo json_encode(["status" => 0, "mensaje" => "Error al registrar usuario"]);
     }

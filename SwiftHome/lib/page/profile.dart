@@ -12,9 +12,11 @@ import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key, required this.idPersona});
+  const ProfilePage(
+      {super.key, required this.idPersona, required this.buscandoPiso});
 
   final int idPersona;
+  final bool buscandoPiso;
 
   @override
   State<ProfilePage> createState() => _ProfilePagePageState();
@@ -135,6 +137,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
         child: AppbarAlreadyRegistered(
           namePage: 'profile',
           idPersona: widget.idPersona,
+          buscandoPiso: widget.buscandoPiso,
         ),
       ),
       body: DefaultTabController(

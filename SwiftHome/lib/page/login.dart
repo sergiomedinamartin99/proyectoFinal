@@ -157,6 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                                                         HomePage(
                                                       idPersona:
                                                           check['usuarioId'],
+                                                      buscandoPiso:
+                                                          check['buscandoPiso'],
                                                     ),
                                                   ),
                                                   (Route<dynamic> route) =>

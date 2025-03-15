@@ -377,12 +377,12 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
                                                   Navigator.of(context)
                                                       .pushAndRemoveUntil(
                                                     MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          HomePage(
-                                                        idPersona: int.parse(
-                                                            comprobar[
-                                                                'usuarioId']),
-                                                      ),
+                                                      builder: (context) => HomePage(
+                                                          idPersona: int.parse(
+                                                              comprobar[
+                                                                  'usuarioId']),
+                                                          buscandoPiso: comprobar[
+                                                              'buscandoPiso']),
                                                     ),
                                                     (Route<dynamic> route) =>
                                                         false,

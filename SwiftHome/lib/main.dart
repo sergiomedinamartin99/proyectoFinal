@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:swifthome/page/login.dart';
 import 'package:swifthome/page/panelAdmin.dart';
 import 'package:swifthome/page/home.dart';
 import 'package:swifthome/page/registration_step_third.dart';
@@ -52,7 +53,7 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         const Locale('es', ''), // Español
       ],
-      //home: const LoginPage(title: 'Flutter Demo Home Page'),
+      home: const LoginPage(),
       /*home: HomePage(
         idPersona: 1,
       ),*/
@@ -71,10 +72,11 @@ class MyApp extends StatelessWidget {
           biografia: "qwe",
           precio: "q1222",
           descripcionVivienda: "qwe"),*/
-
+      /**
       home: const PanelAdminPage(
         idPersona: 1,
       ),
+       */
     );
   }
 }
