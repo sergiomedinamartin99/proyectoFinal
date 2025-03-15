@@ -186,67 +186,199 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
                                                                     IconButtonPersonal(
                                                                       Icon(Icons
                                                                           .delete),
-                                                                      () async {
-                                                                        String
-                                                                            contenido =
-                                                                            await deleteUser(user['id'].toString());
-                                                                        setState(
-                                                                            () {
-                                                                          users.removeWhere((element) =>
-                                                                              element['id'] ==
-                                                                              user['id']);
-                                                                        });
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(
-                                                                          SnackBar(
-                                                                            content:
-                                                                                Text(contenido),
-                                                                            action:
-                                                                                SnackBarAction(
-                                                                              label: 'Cerrar',
-                                                                              onPressed: () {},
-                                                                            ),
-                                                                          ),
+                                                                      () {
+                                                                        showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext context) {
+                                                                            return Dialog(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              child: SizedBox(
+                                                                                width: 400,
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(16.0),
+                                                                                  child: Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          const Text(
+                                                                                            'Confirmar eliminación',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 18,
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                          ),
+                                                                                          IconButton(
+                                                                                            icon: const Icon(Icons.close),
+                                                                                            onPressed: () {
+                                                                                              Navigator.of(context).pop();
+                                                                                            },
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      SizedBox(height: 16),
+                                                                                      Text(
+                                                                                        '¿Estás seguro de que deseas eliminar '
+                                                                                        'al usuario ${user['nombre']} ${user['apellidos']}?',
+                                                                                        style: const TextStyle(fontSize: 16),
+                                                                                      ),
+                                                                                      const SizedBox(height: 24),
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          TextButton(
+                                                                                            onPressed: () {
+                                                                                              Navigator.of(context).pop();
+                                                                                            },
+                                                                                            child: const Text('Cancelar'),
+                                                                                          ),
+                                                                                          const SizedBox(width: 8),
+                                                                                          ElevatedButton(
+                                                                                            onPressed: () async {
+                                                                                              String contenido = await deleteUser(user['id'].toString());
+                                                                                              setState(() {
+                                                                                                users.removeWhere((element) => element['id'] == user['id']);
+                                                                                              });
+                                                                                              Navigator.of(context).pop();
+                                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                SnackBar(
+                                                                                                  content: Text(contenido),
+                                                                                                  action: SnackBarAction(
+                                                                                                    label: 'Cerrar',
+                                                                                                    onPressed: () {},
+                                                                                                  ),
+                                                                                                ),
+                                                                                              );
+                                                                                            },
+                                                                                            child: const Text('Confirmar'),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          },
                                                                         );
                                                                       },
                                                                     ),
                                                                     IconButtonPersonal(
                                                                       Icon(Icons
                                                                           .lock),
-                                                                      () async {
-                                                                        String
-                                                                            contenido =
-                                                                            await blockUser(user['id'].toString());
-                                                                        setState(
-                                                                            () {
-                                                                          users.removeWhere((element) =>
-                                                                              element['id'] ==
-                                                                              user['id']);
-                                                                        });
-                                                                        final response =
-                                                                            await getDatosUsuarioBloqueado();
-                                                                        if (response !=
-                                                                                null &&
-                                                                            response["status"] ==
-                                                                                1) {
-                                                                          setState(
-                                                                              () {
-                                                                            // Reinicia la lista con los datos actuales del API
-                                                                            usersBlock.clear();
-                                                                            usersBlock.addAll(List<Map<String, dynamic>>.from(response["usuarios"]));
-                                                                          });
-                                                                        }
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(
-                                                                          SnackBar(
-                                                                            content:
-                                                                                Text(contenido),
-                                                                            action:
-                                                                                SnackBarAction(
-                                                                              label: 'Cerrar',
-                                                                              onPressed: () {},
-                                                                            ),
-                                                                          ),
+                                                                      () {
+                                                                        showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext context) {
+                                                                            // Controlador para capturar el motivo de bloqueo
+                                                                            final TextEditingController
+                                                                                motivoController =
+                                                                                TextEditingController();
+
+                                                                            return Dialog(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                              ),
+                                                                              child: SizedBox(
+                                                                                width: 600,
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(16.0),
+                                                                                  child: Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                        children: [
+                                                                                          const Text(
+                                                                                            'Confirmar bloqueo',
+                                                                                            style: TextStyle(
+                                                                                              fontSize: 18,
+                                                                                              fontWeight: FontWeight.bold,
+                                                                                            ),
+                                                                                          ),
+                                                                                          IconButton(
+                                                                                            icon: const Icon(Icons.close),
+                                                                                            onPressed: () {
+                                                                                              Navigator.of(context).pop();
+                                                                                            },
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      const SizedBox(height: 16),
+                                                                                      // Etiqueta en gris
+                                                                                      const Text(
+                                                                                        'Motivo bloqueo',
+                                                                                        style: TextStyle(
+                                                                                          fontSize: 16,
+                                                                                          color: Colors.grey,
+                                                                                        ),
+                                                                                      ),
+                                                                                      const SizedBox(height: 8),
+                                                                                      // Área de texto para ingresar el motivo
+                                                                                      TextField(
+                                                                                        controller: motivoController,
+                                                                                        maxLines: 4,
+                                                                                        decoration: const InputDecoration(
+                                                                                          border: OutlineInputBorder(),
+                                                                                          hintText: 'Escribe el motivo del bloqueo...',
+                                                                                        ),
+                                                                                      ),
+                                                                                      const SizedBox(height: 24),
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                                        children: [
+                                                                                          TextButton(
+                                                                                            onPressed: () {
+                                                                                              Navigator.of(context).pop();
+                                                                                            },
+                                                                                            child: const Text('Cancelar'),
+                                                                                          ),
+                                                                                          const SizedBox(width: 8),
+                                                                                          ElevatedButton(
+                                                                                            onPressed: () async {
+                                                                                              String motivo = motivoController.text;
+                                                                                              // Por ejemplo, podrías pasar "motivo" a blockUser
+                                                                                              String contenido = await blockUser(user['id'].toString(), motivo);
+                                                                                              setState(() {
+                                                                                                users.removeWhere((element) => element['id'] == user['id']);
+                                                                                              });
+                                                                                              final response = await getDatosUsuarioBloqueado();
+                                                                                              if (response != null && response["status"] == 1) {
+                                                                                                setState(() {
+                                                                                                  usersBlock.clear();
+                                                                                                  usersBlock.addAll(List<Map<String, dynamic>>.from(response["usuarios"]));
+                                                                                                });
+                                                                                              }
+                                                                                              Navigator.of(context).pop();
+                                                                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                SnackBar(
+                                                                                                  content: Text(contenido),
+                                                                                                  action: SnackBarAction(
+                                                                                                    label: 'Cerrar',
+                                                                                                    onPressed: () {},
+                                                                                                  ),
+                                                                                                ),
+                                                                                              );
+                                                                                            },
+                                                                                            child: const Text('Confirmar'),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          },
                                                                         );
                                                                       },
                                                                     ),
@@ -345,21 +477,84 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
                                                                       children: [
                                                                         TextButton(
                                                                           onPressed:
-                                                                              () async {
-                                                                            String
-                                                                                contenido =
-                                                                                await unlockUser(userBlock['id'].toString());
-                                                                            setState(() {
-                                                                              usersBlock.removeWhere((user) => user['id'] == userBlock['id']);
-                                                                            });
-                                                                            ScaffoldMessenger.of(context).showSnackBar(
-                                                                              SnackBar(
-                                                                                content: Text(contenido),
-                                                                                action: SnackBarAction(
-                                                                                  label: 'Cerrar',
-                                                                                  onPressed: () {},
-                                                                                ),
-                                                                              ),
+                                                                              () {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext context) {
+                                                                                return Dialog(
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                  ),
+                                                                                  child: SizedBox(
+                                                                                    width: 400,
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(16.0),
+                                                                                      child: Column(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              const Text(
+                                                                                                'Confirmar desbloqueo',
+                                                                                                style: TextStyle(
+                                                                                                  fontSize: 18,
+                                                                                                  fontWeight: FontWeight.bold,
+                                                                                                ),
+                                                                                              ),
+                                                                                              IconButton(
+                                                                                                icon: const Icon(Icons.close),
+                                                                                                onPressed: () {
+                                                                                                  Navigator.of(context).pop();
+                                                                                                },
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          SizedBox(height: 16),
+                                                                                          Text(
+                                                                                            '¿Estás seguro de que deseas desbloquear '
+                                                                                            'al usuario ${userBlock['correo']}?',
+                                                                                            style: const TextStyle(fontSize: 16),
+                                                                                          ),
+                                                                                          const SizedBox(height: 24),
+                                                                                          Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                                                            children: [
+                                                                                              TextButton(
+                                                                                                onPressed: () {
+                                                                                                  Navigator.of(context).pop();
+                                                                                                },
+                                                                                                child: const Text('Cancelar'),
+                                                                                              ),
+                                                                                              const SizedBox(width: 8),
+                                                                                              ElevatedButton(
+                                                                                                onPressed: () async {
+                                                                                                  String contenido = await unlockUser(userBlock['id'].toString());
+                                                                                                  setState(() {
+                                                                                                    usersBlock.removeWhere((user) => user['id'] == userBlock['id']);
+                                                                                                  });
+                                                                                                  Navigator.of(context).pop();
+                                                                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                                                                    SnackBar(
+                                                                                                      content: Text(contenido),
+                                                                                                      action: SnackBarAction(
+                                                                                                        label: 'Cerrar',
+                                                                                                        onPressed: () {},
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  );
+                                                                                                },
+                                                                                                child: const Text('Confirmar'),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              },
                                                                             );
                                                                           },
                                                                           style:
@@ -457,10 +652,13 @@ Future<String> deleteUser(String idUsuario) async {
   return network.deleteUser();
 }
 
-Future<String> blockUser(String idUsuario) async {
+Future<String> blockUser(String idUsuario, String motivoBloqueo) async {
   String url =
       '${ClassConstant.ipBaseDatos}${ClassConstant.urlBlockUserRoomSwipe}';
-  final user = {"idUsuario": idUsuario.toString()};
+  final user = {
+    "idUsuario": idUsuario.toString(),
+    "motivoBloqueo": motivoBloqueo
+  };
   NetworkUserProfile network = NetworkUserProfile(url, user);
   return network.blockUser();
 }
