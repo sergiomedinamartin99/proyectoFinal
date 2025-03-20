@@ -17,11 +17,18 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-TextEditingController _controladorCorreo = TextEditingController();
-TextEditingController _controladorContrasena = TextEditingController();
-
 class _LoginPageState extends State<LoginPage> {
   final ScrollController _scrollController = ScrollController();
+  TextEditingController _controladorCorreo = TextEditingController();
+  TextEditingController _controladorContrasena = TextEditingController();
+
+  @override
+  void dispose() {
+    _controladorCorreo.clear();
+    _controladorContrasena.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
 
                                           if (check != null) {
                                             if (check['status'] == 1) {
-                                              if (check["admin"] == 0) {
+                                              if (!check["admin"]) {
                                                 SnackbarPersonalized(
                                                         title: check['mensaje'])
                                                     .show(context);
@@ -159,12 +166,13 @@ class _LoginPageState extends State<LoginPage> {
                                                           check['usuarioId'],
                                                       buscandoPiso:
                                                           check['buscandoPiso'],
+                                                      isAdmin: check['admin'],
                                                     ),
                                                   ),
                                                   (Route<dynamic> route) =>
                                                       false,
                                                 );
-                                              } else if (check["admin"] == 1) {
+                                              } else if (check["admin"]) {
                                                 // REPLANTEAR SI PASAR EL ID DEL ADMINISTRADOR
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
@@ -173,6 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                                                         PanelAdminPage(
                                                       idPersona:
                                                           check['usuarioId'],
+                                                      isAdmin: check['admin'],
                                                     ),
                                                   ),
                                                   (Route<dynamic> route) =>

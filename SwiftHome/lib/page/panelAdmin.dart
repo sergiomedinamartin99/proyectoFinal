@@ -7,9 +7,11 @@ import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
 
 class PanelAdminPage extends StatefulWidget {
-  const PanelAdminPage({super.key, required this.idPersona});
+  const PanelAdminPage(
+      {super.key, required this.idPersona, required this.isAdmin});
 
   final int idPersona;
+  final bool isAdmin;
 
   @override
   State<PanelAdminPage> createState() => _PanelAdminPageState();
@@ -49,6 +51,7 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
           namePage: 'home',
           idPersona: widget.idPersona,
           buscandoPiso: true,
+          isAdmin: widget.isAdmin,
         ),
       ),
       body: DefaultTabController(

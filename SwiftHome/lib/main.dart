@@ -53,9 +53,11 @@ class MyApp extends StatelessWidget {
       supportedLocales: [
         const Locale('es', ''), // Español
       ],
-      home: const LoginPage(),
+      //home: const LoginPage(),
       /*home: HomePage(
         idPersona: 1,
+        buscandoPiso: false,
+        isAdmin: true,
       ),*/
 
       /*home: const RegistrationStepThirdPage(
@@ -72,11 +74,11 @@ class MyApp extends StatelessWidget {
           biografia: "qwe",
           precio: "q1222",
           descripcionVivienda: "qwe"),*/
-      /**
+
       home: const PanelAdminPage(
         idPersona: 1,
+        isAdmin: true,
       ),
-       */
     );
   }
 }

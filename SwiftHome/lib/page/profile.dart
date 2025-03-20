@@ -13,10 +13,14 @@ import 'package:swifthome/widget/labelForm.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage(
-      {super.key, required this.idPersona, required this.buscandoPiso});
+      {super.key,
+      required this.idPersona,
+      required this.buscandoPiso,
+      required this.isAdmin});
 
   final int idPersona;
   final bool buscandoPiso;
+  final bool isAdmin;
 
   @override
   State<ProfilePage> createState() => _ProfilePagePageState();
@@ -138,6 +142,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
           namePage: 'profile',
           idPersona: widget.idPersona,
           buscandoPiso: widget.buscandoPiso,
+          isAdmin: widget.isAdmin,
         ),
       ),
       body: DefaultTabController(
@@ -224,7 +229,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
             ),
             labelForm(title: "Apellidos"),
             TextFormField(
-              enabled: false,
+              enabled: widget.isAdmin ? true : false,
               controller: _controllerApellidos,
               decoration: const InputDecoration(
                 hintText: "Introduce tus apellidos...",

@@ -8,12 +8,17 @@ import 'package:swifthome/api/network/network_insert_data.dart';
 import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/page/registration_step_third.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
+import 'package:swifthome/widget/roomswipeheader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage(
-      {super.key, required this.idPersona, required this.buscandoPiso});
+      {super.key,
+      required this.idPersona,
+      required this.buscandoPiso,
+      required this.isAdmin});
   final int idPersona;
   final bool buscandoPiso;
+  final bool isAdmin;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -37,7 +42,24 @@ class _HomePageState extends State<HomePage> {
           Map<String, dynamic> perfiles = value['perfil'];
           if (widget.buscandoPiso) {
             perfiles.forEach((key, perfil) {
-              listPersonasBuscador.add(PersonasBuscador(
+              listPersonasPropietario.add(
+                PersonasPropietario(
+                  perfil['id'],
+                  perfil['nombre'],
+                  perfil['apellidos'],
+                  perfil['fechaNacimiento'],
+                  perfil['genero'],
+                  perfil['ubicacion'],
+                  perfil['precio'],
+                  perfil['descripcionVivienda'],
+                  perfil['imagenes'],
+                ),
+              );
+            });
+          } else {
+            perfiles.forEach((key, perfil) {
+              listPersonasBuscador.add(
+                PersonasBuscador(
                   perfil['id'],
                   perfil['nombre'],
                   perfil['apellidos'],
@@ -46,21 +68,12 @@ class _HomePageState extends State<HomePage> {
                   perfil['ubicacion'],
                   perfil['ocupacion'],
                   perfil['biografia'],
-                  perfil['imagenes']));
-            });
-          } else {
-            perfiles.forEach((key, perfil) {
-              listPersonasPropietario.add(PersonasPropietario(
-                perfil['id'],
-                perfil['nombre'],
-                perfil['apellidos'],
-                perfil['fechaNacimiento'],
-                perfil['genero'],
-                perfil['ubicacion'],
-                perfil['precio'],
-                perfil['descripcionVivienda'],
-                perfil['imagenes'],
-              ));
+                  perfil['imagenes'],
+                ),
+              );
+
+              print("UWWWWWWWWWWWWWU");
+              print(listPersonasPropietario);
             });
           }
           checkUploadedData = true;
@@ -80,15 +93,20 @@ class _HomePageState extends State<HomePage> {
     CardSwiperDirection direction,
   ) async {
     debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
+      'La tarjeta $previousIndex se deslizó hacia ${direction.name}. Ahora la tarjeta $currentIndex está en la parte superior',
     );
+
+    // Usar la lista correcta según widget.buscandoPiso:
+    final targetId = widget.buscandoPiso
+        ? listPersonasPropietario[previousIndex].id.toString()
+        : listPersonasBuscador[previousIndex].id.toString();
+
     Map<String, dynamic>? comprobar = await insertarLikeDislike(
       widget.idPersona.toString(),
-      widget.buscandoPiso
-          ? listPersonasBuscador[previousIndex].id.toString()
-          : listPersonasPropietario[previousIndex].id.toString(),
+      targetId,
       direction == CardSwiperDirection.left ? '0' : '1',
     );
+
     if (comprobar != null && comprobar['status'] == 1) {
       debugPrint("Se ha insertado correctamente");
     } else {
@@ -120,6 +138,7 @@ class _HomePageState extends State<HomePage> {
           namePage: 'home',
           idPersona: widget.idPersona,
           buscandoPiso: widget.buscandoPiso,
+          isAdmin: widget.isAdmin,
         ),
       ),
       body: SafeArea(
@@ -139,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   )
                 : widget.buscandoPiso
-                    ? listPersonasBuscador.isEmpty || noMoreCards
+                    ? listPersonasPropietario.isEmpty || noMoreCards
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -157,11 +176,7 @@ class _HomePageState extends State<HomePage> {
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                "RoomSwipe: Encuentra tu compañero ideal",
-                                style: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold),
-                              ),
+                              RoomSwipeHeader(),
                               cardPadre(),
                               // BOTONES HAY QUE VERLO
                               Padding(
@@ -239,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           )
-                    : listPersonasPropietario.isEmpty || noMoreCards
+                    : listPersonasBuscador.isEmpty || noMoreCards
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -345,41 +360,47 @@ class _HomePageState extends State<HomePage> {
 
   /// Contenedor del CardSwiper con dimensiones 500x700
   Widget cardPadre() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      width: 400,
-      height: 667,
-      child: CardSwiper(
-        controller: controller,
-        isLoop: false,
-        scale: 0.7,
-        onSwipe: onSwipe,
-        onEnd: () {
-          setState(() {
-            noMoreCards = true;
-          });
-        },
-        padding: EdgeInsets.zero,
-        numberOfCardsDisplayed: widget.buscandoPiso
-            ? listPersonasBuscador.length > 1
-                ? 2
-                : 1
-            : listPersonasPropietario.length > 1
-                ? 2
-                : 1,
-        allowedSwipeDirection:
-            AllowedSwipeDirection.symmetric(vertical: false, horizontal: true),
-        cardsCount: widget.buscandoPiso
-            ? listPersonasBuscador.length
-            : listPersonasPropietario.length,
-        cardBuilder: (context, index, percentThresholdX, percentThresholdY) =>
-            widget.buscandoPiso
-                ? PersonaCardBuscador(
-                    personasBuscador: listPersonasBuscador[index])
-                : PersonaCardPropietario(
-                    personasPropietario: listPersonasPropietario[index]),
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          width: 400,
+          height: 667,
+          child: CardSwiper(
+            controller: controller,
+            isLoop: false,
+            scale: 0.7,
+            onSwipe: onSwipe,
+            onEnd: () {
+              setState(() {
+                noMoreCards = true;
+              });
+            },
+            padding: EdgeInsets.zero,
+            numberOfCardsDisplayed: widget.buscandoPiso
+                ? listPersonasPropietario.length > 1
+                    ? 2
+                    : 1
+                : listPersonasBuscador.length > 1
+                    ? 2
+                    : 1,
+            allowedSwipeDirection: AllowedSwipeDirection.symmetric(
+                vertical: false, horizontal: true),
+            cardsCount: widget.buscandoPiso
+                ? listPersonasPropietario.length
+                : listPersonasBuscador.length,
+            cardBuilder:
+                (context, index, percentThresholdX, percentThresholdY) =>
+                    widget.buscandoPiso
+                        ? PersonaCardPropietario(
+                            personasPropietario: listPersonasPropietario[index])
+                        : PersonaCardBuscador(
+                            personasBuscador: listPersonasBuscador[index]),
+          ),
+        ),
       ),
     );
   }
@@ -567,58 +588,196 @@ class _PersonaCardBuscadorState extends State<PersonaCardBuscador>
 
   /// Contenido cuando la tarjeta está "colapsada": solo se muestra la imagen
   Widget buildCollapsedContent() {
-    return buildImageCarousel();
+    final int edad = calcularEdad(widget.personasBuscador.fechaNacimiento);
+    final String edadTexto = edad == 0 ? "N/A" : '$edad';
+
+    return Stack(
+      children: [
+        // 1. Carrusel de imágenes
+        buildImageCarousel(),
+
+        // 2. Degradado oscuro en la parte inferior
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            ),
+            child: Container(
+              height: 120,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // 3. Contenido (texto) encima del degradado
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Nombre, apellidos y edad
+              Text(
+                '${widget.personasBuscador.nombre} '
+                '${widget.personasBuscador.apellidos}, '
+                '$edadTexto',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24, // tamaño grande estilo Tinder
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              // Ubicación o distancia
+              Text(
+                "Ubicación: ${widget.personasBuscador.ubicacion}",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   /// Contenido expandido: se muestra la imagen (con alto fijo) y el contenido textual
   Widget buildExpandedContent() {
+    final int edad = calcularEdad(widget.personasBuscador.fechaNacimiento);
+    final String edadTexto = edad == 0 ? "N/A" : '$edad';
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Carrusel de imágenes con alto fijo
           buildImageCarousel(height: 300),
-          // Contenido textual
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.personasBuscador.nombre,
+                  "Datos personales",
                   style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 8),
+                Divider(color: Colors.grey, thickness: 1, height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Nombre completo",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "${widget.personasBuscador.nombre} "
+                              "${widget.personasBuscador.apellidos}",
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Género",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.person,
+                                    color: Colors.black, size: 18),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(widget.personasBuscador.genero),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Edad",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text("${edadTexto} años"),
+                            SizedBox(height: 8),
+                            Text(
+                              "Ubicación",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on,
+                                    color: Colors.black, size: 18),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child:
+                                      Text(widget.personasBuscador.ubicacion),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
                 Text(
-                  "Apellidos: ${widget.personasBuscador.apellidos}",
-                  style: const TextStyle(fontSize: 18),
+                  "Información del usuario",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                Divider(color: Colors.grey, thickness: 1, height: 20),
                 Text(
-                  "Fecha Nacimiento: ${widget.personasBuscador.fechaNacimiento}",
-                  style: const TextStyle(fontSize: 18),
+                  "Ocupación",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.work, color: Colors.black, size: 18),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(widget.personasBuscador.ocupacion),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
                 Text(
-                  "Genero: ${widget.personasBuscador.genero}",
-                  style: const TextStyle(fontSize: 18),
+                  "Biografía",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  "Ubicación: ${widget.personasBuscador.ubicacion}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Ocupación: ${widget.personasBuscador.ocupacion}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Biografia: ${widget.personasBuscador.biografia}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
+                Text(widget.personasBuscador.biografia),
               ],
             ),
           ),
@@ -869,57 +1028,207 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
 
   /// Contenido cuando la tarjeta está "colapsada": solo se muestra la imagen
   Widget buildCollapsedContent() {
-    return buildImageCarousel();
+    final int edad = calcularEdad(widget.personasPropietario.fechaNacimiento);
+    final String edadTexto = edad == 0 ? "N/A" : '$edad';
+
+    return Stack(
+      children: [
+        // 1. Carrusel de imágenes
+        buildImageCarousel(),
+
+        // 2. Degradado oscuro en la parte inferior
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            ),
+            child: Container(
+              height: 120,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black,
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // 3. Contenido encima del degradado
+        Positioned(
+          left: 16,
+          right: 16,
+          bottom: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Nombre y edad
+              Text(
+                '${widget.personasPropietario.nombre} '
+                '${widget.personasPropietario.apellidos}, ',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              Text(
+                '${double.parse(widget.personasPropietario.precio).toStringAsFixed(2)}€ / mes',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 4),
+
+              // Ubicación o distancia
+              Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.white, size: 16),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      widget.personasPropietario.ubicacion,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
-  /// Contenido expandido: se muestra la imagen (con alto fijo) y el contenido textual
   Widget buildExpandedContent() {
+    final int edad = calcularEdad(widget.personasPropietario.fechaNacimiento);
+    final String edadTexto = edad == 0 ? "N/A" : '$edad';
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Carrusel de imágenes con alto fijo
           buildImageCarousel(height: 300),
-          // Contenido textual
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.personasPropietario.nombre,
+                  "Datos personales",
                   style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
+                Divider(color: Colors.grey, thickness: 1, height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Nombre completo",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "${widget.personasPropietario.nombre} "
+                              "${widget.personasPropietario.apellidos}",
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Género",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.person,
+                                    color: Colors.black, size: 18),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child:
+                                      Text(widget.personasPropietario.genero),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 16),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Edad",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text("${edadTexto} años"),
+                            SizedBox(height: 8),
+                            Text(
+                              "Ubicación",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(Icons.location_on,
+                                    color: Colors.black, size: 18),
+                                SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                      widget.personasPropietario.ubicacion),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  "Información de la vivienda",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Divider(color: Colors.grey, thickness: 1, height: 20),
+                Text(
+                  "Precio",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                    '${double.parse(widget.personasPropietario.precio).toStringAsFixed(2)}€ / mes'),
                 const SizedBox(height: 8),
                 Text(
-                  "Apellidos: ${widget.personasPropietario.apellidos}",
-                  style: const TextStyle(fontSize: 18),
+                  "Descripción",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  "Fecha Nacimiento: ${widget.personasPropietario.fechaNacimiento}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Genero: ${widget.personasPropietario.genero}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Ubicación: ${widget.personasPropietario.ubicacion}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Precio: ${widget.personasPropietario.precio}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Descripción: ${widget.personasPropietario.descripcionVivienda}",
-                  style: const TextStyle(fontSize: 18),
-                ),
+                Text(widget.personasPropietario.descripcionVivienda),
               ],
             ),
           ),
@@ -984,6 +1293,32 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
       ),
     );
   }
+}
+
+int calcularEdad(String fechaNacimiento) {
+  try {
+    final partes = fechaNacimiento.split('-');
+    if (partes.length == 3) {
+      final year = int.parse(partes[0]);
+      final month = int.parse(partes[1]);
+      final day = int.parse(partes[2]);
+      final birthDate = DateTime(year, month, day);
+
+      final hoy = DateTime.now();
+      int edad = hoy.year - birthDate.year;
+
+      // Ajuste si aún no ha cumplido años en el mes/día actual
+      if (hoy.month < birthDate.month ||
+          (hoy.month == birthDate.month && hoy.day < birthDate.day)) {
+        edad--;
+      }
+      return edad;
+    }
+  } catch (e) {
+    // Manejo de error si la fecha no está en el formato esperado
+    debugPrint("Error al calcular edad: $e");
+  }
+  return 0; // Por defecto, si algo falla
 }
 
 Future<Map<String, dynamic>?> obtenerUserRoomSwipe(String perfilId) async {

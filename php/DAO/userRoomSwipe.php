@@ -7,7 +7,6 @@ function getSwipe($idUsuario) {
         if ($conexion != null) {
             $query = "CALL getPerfilesRoomSwipe(:id);";
     
-    
             $stmt = $conexion->prepare($query);
             $stmt->bindParam(":id", $idUsuario);
             $stmt->execute();
@@ -19,14 +18,33 @@ function getSwipe($idUsuario) {
                 $id = $fila['id'];
     
                 if (!isset($usuarios[$id])) {
-                    $usuarios[$id] = [
-                        "id" => $fila['id'],
-                        "nombre" => $fila['nombre'],
-                        "apellidos" => $fila['apellidos'],
-                        "precio" => $fila['buscandoPiso'] === 1 ? "" : $fila['precio'],
-                        "descripcionVivienda" => $fila['buscandoPiso'] === 1 ? "" : $fila['descripcionVivienda'],
-                        "imagenes" => []
-                    ];
+                    // Si buscandoPiso es true (1)
+                    if ($fila['buscandoPiso'] === 1) {
+                        $usuarios[$id] = [
+                            "id" => $fila['id'],
+                            "nombre" => $fila['nombre'],
+                            "apellidos" => $fila['apellidos'],
+                            "fechaNacimiento" => $fila['fecha_nacimiento'],
+                            "genero" => $fila['genero'],
+                            "ubicacion" => $fila['ubicacion'],
+                            "ocupacion" => $fila['ocupacion'], 
+                            "biografia" => $fila['biografia'],
+                            "imagenes" => []
+                        ];
+                    } else {
+                        // Si buscandoPiso es false
+                        $usuarios[$id] = [
+                            "id" => $fila['id'],
+                            "nombre" => $fila['nombre'],
+                            "apellidos" => $fila['apellidos'],
+                            "fechaNacimiento" => $fila['fecha_nacimiento'],
+                            "genero" => $fila['genero'],
+                            "ubicacion" => $fila['ubicacion'],
+                            "precio" => $fila['precio'],
+                            "descripcionVivienda" => $fila['descripcionVivienda'],
+                            "imagenes" => []
+                        ];
+                    }
                 }
     
                 if (!is_null($fila['posicionImagen'])) {
@@ -43,8 +61,8 @@ function getSwipe($idUsuario) {
         return $usuarios;
     
     } catch (PDOException $e) {
+        error_log("Error al obtener el perfil del usuario: " . $e->getMessage());
         return 0;
-        error_log("Error al obtener el perfil del usuario: " . $ex->getMessage());
         exit;
     } finally {
         $conexion = null;

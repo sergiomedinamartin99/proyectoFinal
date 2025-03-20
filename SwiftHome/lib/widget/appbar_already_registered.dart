@@ -7,10 +7,12 @@ class AppbarAlreadyRegistered extends StatelessWidget {
   String namePage;
   int idPersona;
   bool buscandoPiso;
+  bool isAdmin;
   AppbarAlreadyRegistered(
       {required this.namePage,
       required this.idPersona,
-      required this.buscandoPiso});
+      required this.buscandoPiso,
+      required this.isAdmin});
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -30,6 +32,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
               builder: (context) => HomePage(
                 idPersona: idPersona,
                 buscandoPiso: buscandoPiso,
+                isAdmin: isAdmin,
               ),
             ),
           );
@@ -56,6 +59,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                         builder: (context) => HomePage(
                           idPersona: idPersona,
                           buscandoPiso: buscandoPiso,
+                          isAdmin: isAdmin,
                         ),
                       ),
                     );
@@ -88,6 +92,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                       builder: (context) => ProfilePage(
                         idPersona: idPersona,
                         buscandoPiso: buscandoPiso,
+                        isAdmin: isAdmin,
                       ),
                     ),
                   );
