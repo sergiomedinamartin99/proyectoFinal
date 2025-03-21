@@ -54,11 +54,11 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(),
-      /*home: HomePage(
+      home: HomePage(
         idPersona: 1,
-        buscandoPiso: false,
-        isAdmin: true,
-      ),*/
+        buscandoPiso: true,
+        isAdmin: false,
+      ),
 
       /*home: const RegistrationStepThirdPage(
           correoElectronico: "sergio@sergio.es",
@@ -75,10 +75,9 @@ class MyApp extends StatelessWidget {
           precio: "q1222",
           descripcionVivienda: "qwe"),*/
 
-      home: const PanelAdminPage(
+      /*home: const PanelAdminPage(
         idPersona: 1,
-        isAdmin: true,
-      ),
+      ),*/
     );
   }
 }

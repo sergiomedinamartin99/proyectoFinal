@@ -28,4 +28,6 @@ class ClassConstant {
       '/ProyectoFinal/php/DAO/unlockUserRoomSwipe.php';
   static const String urlLikeDislikeMatch =
       '/ProyectoFinal/php/DAO/likeDislikeMatch.php';
+  static const String urlUpdateUserRoomSwipe =
+      '/ProyectoFinal/php/DAO/updateUserRoomSwipe.php';
 }

@@ -11,7 +11,22 @@ function getPerfilUsuario($idUsuario) {
             $resultado->bindParam(":id", $idUsuario);
             $resultado->execute();
             $usuario = $resultado->fetch();
-            return $usuario;
+
+            if ($usuario["buscandoPiso"]) {
+                $stmtBuscador = $conexion->prepare("SELECT ocupacion, biografia FROM buscador WHERE perfilId = :perfilId");
+                $stmtBuscador->bindParam(":perfilId", $usuario['usuarioId']);
+                $stmtBuscador->execute();
+                $datosBuscador = $stmtBuscador->fetch();
+                $perfilCompleto = $usuario + $datosBuscador;
+            } else {
+                $stmtPropietario = $conexion->prepare("SELECT precio, descripcionVivienda FROM propietario WHERE perfilId = :perfilId");
+                $stmtPropietario->bindParam(":perfilId", $usuario['usuarioId']);
+                $stmtPropietario->execute();
+                $datosPropietario = $stmtPropietario->fetch();
+                $perfilCompleto = $usuario + $datosPropietario;
+            }
+
+            return $perfilCompleto;
         }
     } catch (Exception $ex) {
         return 0;

@@ -34,4 +34,19 @@ class NetworkProfile {
       return null;
     }
   }
+
+  // Hecho ahora
+  Future<Map<String, dynamic>?> updateProfile() async {
+    debugPrint(url);
+    debugPrint("$mapa");
+    Response response = await post(Uri.parse(url), body: mapa);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      debugPrint("Usuario actualizado: $responseData");
+      return responseData;
+    } else {
+      debugPrint("Error: ${response.statusCode}");
+      return null;
+    }
+  }
 }

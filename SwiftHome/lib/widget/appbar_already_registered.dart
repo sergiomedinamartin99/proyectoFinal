@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swifthome/page/chat_list.dart';
 import 'package:swifthome/page/home.dart';
+import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/profile.dart';
 
 class AppbarAlreadyRegistered extends StatelessWidget {
@@ -82,7 +83,7 @@ class AppbarAlreadyRegistered extends StatelessWidget {
         ),
         IconButton(
           icon: const Icon(
-            Icons.person,
+            Icons.settings,
             color: Colors.white,
           ),
           onPressed: namePage != 'profile'
@@ -98,6 +99,18 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                   );
                 }
               : null,
+        ),
+        IconButton(
+          icon: const Icon(
+            Icons.logout,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => LeadingPage()),
+              (Route<dynamic> route) => false,
+            );
+          },
         ),
       ],
     );

@@ -1073,7 +1073,7 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
               // Nombre y edad
               Text(
                 '${widget.personasPropietario.nombre} '
-                '${widget.personasPropietario.apellidos}, ',
+                '${widget.personasPropietario.apellidos}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -1081,10 +1081,10 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
                 ),
               ),
 
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
 
               Text(
-                '${double.parse(widget.personasPropietario.precio).toStringAsFixed(2)}€ / mes',
+                '${double.parse(widget.personasPropietario.precio).toStringAsFixed(0)}€ / mes',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,

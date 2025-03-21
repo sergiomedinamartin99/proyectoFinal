@@ -388,7 +388,7 @@ class _RegistrationStepSecondPageState
                                       },
                                     ),
                                   ),
-                                  labelForm(title: "¿Qué buscas en SwiftHome?"),
+                                  labelForm(title: "¿Qué buscas en RoomSwipe?"),
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: DropdownButtonFormField<bool>(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/api/network/network_send_images.dart';
@@ -32,7 +33,20 @@ class _ProfilePagePageState extends State<ProfilePage> {
   String? generoSeleccionado;
   bool? buscandoPisoSeleccionado;
   String? ciudadSeleccionada;
-  final _formularioRegistroStepSecond = GlobalKey<FormState>();
+  String? ocupacionSeleccionada;
+  List<String> ocupaciones = [
+    "Médico",
+    "Ingeniero",
+    "Profesor",
+    "Diseñador Gráfico",
+    "Informático",
+    "Abogado",
+    "Contador",
+    "Electricista",
+    "Chef",
+    "Arquitecto"
+  ];
+  final _formularioActualizacion = GlobalKey<FormState>();
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _controllerNombre = TextEditingController();
   final TextEditingController _controllerApellidos = TextEditingController();
@@ -40,13 +54,53 @@ class _ProfilePagePageState extends State<ProfilePage> {
       TextEditingController();
   final TextEditingController _controllerTelefono = TextEditingController();
   final TextEditingController _controllerBiografia = TextEditingController();
+  final TextEditingController _controllerPrecio = TextEditingController();
+  final TextEditingController _controllerDescripcionVivienda =
+      TextEditingController();
   bool showValidationText = false;
   String validationMessage = "";
   final List<Imagen?> _imagenes =
       List.filled(9, null); // Lista de 9 imágenes o vacías
 
+  DateTime? _selectedDate;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(), // Bloquear fechas posteriores a la actual
+      locale: const Locale('es', 'ES'), // Españolizar el calendario
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black, // Color de selección
+              onPrimary: Colors.white, // Texto sobre el color de selección
+              surface: Colors.white, // Fondo de los elementos
+              onSurface: Colors.black, // Texto general
+            ),
+            dialogBackgroundColor:
+                Colors.white, // Fondo blanco del cuadro de diálogo
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(
+        () {
+          _selectedDate = picked;
+          _controllerFechaNacimiento.text =
+              DateFormat('dd/MM/yyyy').format(picked);
+        },
+      );
+    }
+  }
+
   @override
   void initState() {
+    print("EL TIO CON SU DESCRIPCION DE LA BUSCACION ${widget.buscandoPiso}");
     ciudades.sort();
     getDatosUsuario(widget.idPersona.toString()).then((value) {
       getImagenesUsuario(widget.idPersona.toString()).then((valueImagenes) {
@@ -63,14 +117,25 @@ class _ProfilePagePageState extends State<ProfilePage> {
         setState(() {
           _controllerNombre.text = value['perfilUsuario']['nombre'];
           _controllerApellidos.text = value['perfilUsuario']['apellidos'];
-          _controllerFechaNacimiento.text =
-              value['perfilUsuario']['fecha_nacimiento'];
+          _controllerFechaNacimiento.text = DateFormat('dd/MM/yyyy').format(
+            DateTime.parse(value['perfilUsuario']['fecha_nacimiento']),
+          );
           _controllerTelefono.text =
               value['perfilUsuario']['telefono'].toString();
           generoSeleccionado = value['perfilUsuario']['genero'];
           ciudadSeleccionada = value['perfilUsuario']['ubicacion'];
           buscandoPisoSeleccionado =
-              value['perfilUsuario']['buscandoPiso'] == 1;
+              value['perfilUsuario']['buscandoPiso'] == 1 ? true : false;
+          if (buscandoPisoSeleccionado!) {
+            ocupacionSeleccionada = value['perfilUsuario']['ocupacion'];
+            _controllerBiografia.text = value['perfilUsuario']['biografia'];
+          } else {
+            _controllerPrecio.text =
+                (double.parse(value['perfilUsuario']['precio']))
+                    .toStringAsFixed(0);
+            _controllerDescripcionVivienda.text =
+                value['perfilUsuario']['descripcionVivienda'];
+          }
         });
       }
     });
@@ -210,7 +275,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
-        key: _formularioRegistroStepSecond,
+        key: _formularioActualizacion,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -242,7 +307,28 @@ class _ProfilePagePageState extends State<ProfilePage> {
             ),
             labelForm(title: "Fecha de nacimiento"),
             TextFormField(
-              enabled: false,
+              enabled: widget.isAdmin ? true : false,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Por favor, selecciona tu fecha de nacimiento';
+                }
+                try {
+                  DateTime selectedDate = DateFormat('dd/MM/yyyy').parse(value);
+                  DateTime currentDate = DateTime.now();
+                  int age = currentDate.year - selectedDate.year;
+                  if (currentDate.month < selectedDate.month ||
+                      (currentDate.month == selectedDate.month &&
+                          currentDate.day < selectedDate.day)) {
+                    age--;
+                  }
+                  if (age < 18) {
+                    return 'Debes tener al menos 18 años';
+                  }
+                } catch (e) {
+                  return 'Formato de fecha inválido';
+                }
+                return null;
+              },
               controller: _controllerFechaNacimiento,
               decoration: InputDecoration(
                 hintText: "Selecciona tu fecha de nacimiento...",
@@ -250,7 +336,18 @@ class _ProfilePagePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   borderSide: BorderSide(color: Colors.black, width: 2.0),
                 ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  borderSide: BorderSide(
+                    color: Colors.black,
+                    width: 2,
+                  ),
+                ),
               ),
+              readOnly: true,
+              onTap: () => _selectDate(context),
             ),
             labelForm(title: "Telefono"),
             TextFormField(
@@ -263,6 +360,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
                 }
                 return null;
               },
+              enabled: widget.isAdmin ? true : false,
               controller: _controllerTelefono,
               decoration: const InputDecoration(
                 hintText: "Introduce tu teléfono...",
@@ -329,7 +427,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
                 },
               ),
             ),
-            labelForm(title: "¿Qué buscas en SwiftHome?"),
+            labelForm(title: "¿Qué buscas en RoomSwipe?"),
             Align(
               alignment: Alignment.centerLeft,
               child: DropdownButtonFormField<bool>(
@@ -359,25 +457,146 @@ class _ProfilePagePageState extends State<ProfilePage> {
                 },
               ),
             ),
-            labelForm(title: "Biografía"),
-            TextFormField(
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor, introduce tu biografía';
-                }
-                return null;
-              },
-              controller: _controllerBiografia,
-              decoration: const InputDecoration(
-                hintText: "Introduce tu biografía...",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
-                ),
-              ),
-              keyboardType: TextInputType.multiline,
-              maxLines: 5,
-            ),
+            buscandoPisoSeleccionado == true
+                ? Column(
+                    children: [
+                      labelForm(title: "Ocupación"),
+                      // EDITAR
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: DropdownButtonFormField<String>(
+                          dropdownColor: Colors.white,
+                          isExpanded: true,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 2.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                          value: ocupacionSeleccionada,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Por favor, selecciona tu ocupaación';
+                            }
+                            return null;
+                          },
+                          hint: Text("Selecciona tu ocupación"),
+                          items: ocupaciones.map((String ocupaciones) {
+                            return DropdownMenuItem<String>(
+                              value: ocupaciones,
+                              child: Text(ocupaciones),
+                            );
+                          }).toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              if (value != null) {
+                                ocupacionSeleccionada = value;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      labelForm(title: "Biografía"),
+                      TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Por favor, introduce tu biografía';
+                          }
+                          return null;
+                        },
+                        controller: _controllerBiografia,
+                        decoration: const InputDecoration(
+                          hintText: "Introduce tu biografía...",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 2.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide:
+                                BorderSide(color: Colors.black, width: 2),
+                          ),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                      ),
+                    ],
+                  )
+                : buscandoPisoSeleccionado == false
+                    ? Column(
+                        children: [
+                          // AÑADIR CAMPOS PARA OFRECER HABITACIÓN
+                          labelForm(title: "Precio"),
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Por favor, introduce el precio de la vivienda';
+                              } else if (!RegExp(r'^[0-9]*$').hasMatch(value)) {
+                                return 'Por favor, introduce un precio válido sin puntos ni decimales';
+                              }
+                              return null;
+                            },
+                            controller: _controllerPrecio,
+                            decoration: const InputDecoration(
+                              hintText: "Introduce el precio de la vivienda...",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          labelForm(title: "Descripción de la vivienda"),
+                          TextFormField(
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Por favor, introduce la descripción de la vivienda';
+                              }
+                              return null;
+                            },
+                            controller: _controllerDescripcionVivienda,
+                            decoration: const InputDecoration(
+                              hintText:
+                                  "Introduce la descripción de la vivienda...",
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2),
+                              ),
+                            ),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: 5,
+                          ),
+                        ],
+                      )
+                    : SizedBox(),
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: ElevatedButton(
@@ -390,31 +609,46 @@ class _ProfilePagePageState extends State<ProfilePage> {
                   minimumSize: Size(double.infinity, 50),
                 ),
                 onPressed: () async {
-                  if (_formularioRegistroStepSecond.currentState!.validate()) {}
+                  if (_formularioActualizacion.currentState!.validate()) {
+                    Map<String, dynamic>? actualizacion =
+                        await updateDatosUsuario(
+                            widget.idPersona,
+                            _controllerNombre.text,
+                            _controllerApellidos.text,
+                            _controllerFechaNacimiento.text,
+                            _controllerTelefono.text,
+                            generoSeleccionado.toString(),
+                            ciudadSeleccionada.toString(),
+                            buscandoPisoSeleccionado.toString(),
+                            ocupacionSeleccionada.toString(),
+                            _controllerBiografia.text,
+                            _controllerPrecio.text,
+                            _controllerDescripcionVivienda.text);
+                    if (actualizacion!["status"] == 1) {
+                      // aqui snackbar
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(actualizacion["mensaje"]),
+                          action: SnackBarAction(
+                            label: 'Cerrar',
+                            onPressed: () {},
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(actualizacion["mensaje"]),
+                          action: SnackBarAction(
+                            label: 'Cerrar',
+                            onPressed: () {},
+                          ),
+                        ),
+                      );
+                    }
+                  }
                 },
                 child: Text("Actualizar perfil"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[600],
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  minimumSize: Size(double.infinity, 50),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => LeadingPage(),
-                    ),
-                    (Route<dynamic> route) => false,
-                  );
-                },
-                child: Text("Cerrar sesión"),
               ),
             ),
             Padding(
@@ -655,4 +889,46 @@ Future<Map<String, dynamic>?> deleteUsuario(String idUsuario) async {
   final user = {"idUsuario": idUsuario};
   NetworkProfile network = NetworkProfile(url, user);
   return network.deleteProfile();
+}
+
+Future<Map<String, dynamic>?> updateDatosUsuario(
+  int idUsuario,
+  String nombre,
+  String apellidos,
+  String fechaNacimiento,
+  String telefono,
+  String genero,
+  String ciudad,
+  String buscandoPiso,
+  String ocupacion,
+  String biografia,
+  String precio,
+  String descripcionVivienda,
+) {
+  // Parseamos la fecha recibida
+  DateTime parsedDate = DateFormat('dd/MM/yyyy').parse(fechaNacimiento);
+  // Formateamos a 'yyyy-MM-dd'
+  String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+
+  String url =
+      '${ClassConstant.ipBaseDatos}${ClassConstant.urlUpdateUserRoomSwipe}';
+  final useroomswift = {
+    "idUsuario": idUsuario.toString(),
+    'nombre': nombre,
+    'apellidos': apellidos,
+    'fechaNacimiento': formattedDate,
+    'telefono': telefono,
+    'genero': genero,
+    'ciudad': ciudad,
+    'buscandoPiso': buscandoPiso,
+    'ocupacion': ocupacion.isEmpty ? 'No hay ocupacion' : ocupacion,
+    'biografia': biografia.isEmpty ? 'No hay biografia' : biografia,
+    'precio': precio.isEmpty ? '0' : precio,
+    'descripcionVivienda': descripcionVivienda.isEmpty
+        ? 'No hay descripcion'
+        : descripcionVivienda,
+  };
+
+  NetworkProfile network = NetworkProfile(url, useroomswift);
+  return network.updateProfile();
 }
