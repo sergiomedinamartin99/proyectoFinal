@@ -48,16 +48,52 @@ class AppbarAlreadyRegistered extends StatelessWidget {
       ),
       backgroundColor: Colors.black,
       actions: [
-        IconButton(
+        if (!isAdmin)
+          IconButton(
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white,
+              ),
+              onPressed: namePage != 'home'
+                  ? () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(
+                            idPersona: idPersona,
+                            buscandoPiso: buscandoPiso,
+                            isAdmin: isAdmin,
+                          ),
+                        ),
+                      );
+                    }
+                  : null),
+        if (!isAdmin)
+          IconButton(
             icon: const Icon(
-              Icons.home,
+              Icons.chat,
               color: Colors.white,
             ),
-            onPressed: namePage != 'home'
+            onPressed: namePage != 'admin'
                 ? () {
-                    Navigator.of(context).pushReplacement(
+                    Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => HomePage(
+                        builder: (context) => ChatListPage(),
+                      ),
+                    );
+                  }
+                : null,
+          ),
+        if (!isAdmin)
+          IconButton(
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: namePage != 'profile'
+                ? () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(
                           idPersona: idPersona,
                           buscandoPiso: buscandoPiso,
                           isAdmin: isAdmin,
@@ -65,41 +101,8 @@ class AppbarAlreadyRegistered extends StatelessWidget {
                       ),
                     );
                   }
-                : null),
-        IconButton(
-          icon: const Icon(
-            Icons.chat,
-            color: Colors.white,
+                : null,
           ),
-          onPressed: namePage != 'chatList'
-              ? () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ChatListPage(),
-                    ),
-                  );
-                }
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(
-            Icons.settings,
-            color: Colors.white,
-          ),
-          onPressed: namePage != 'profile'
-              ? () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        idPersona: idPersona,
-                        buscandoPiso: buscandoPiso,
-                        isAdmin: isAdmin,
-                      ),
-                    ),
-                  );
-                }
-              : null,
-        ),
         IconButton(
           icon: const Icon(
             Icons.logout,

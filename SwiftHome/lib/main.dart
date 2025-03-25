@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:swifthome/page/leading.dart';
 import 'package:swifthome/page/login.dart';
 import 'package:swifthome/page/panelAdmin.dart';
 import 'package:swifthome/page/home.dart';
@@ -16,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           inputDecorationTheme: InputDecorationTheme(
@@ -54,30 +56,7 @@ class MyApp extends StatelessWidget {
         const Locale('es', ''), // Español
       ],
       //home: const LoginPage(),
-      home: HomePage(
-        idPersona: 1,
-        buscandoPiso: true,
-        isAdmin: false,
-      ),
-
-      /*home: const RegistrationStepThirdPage(
-          correoElectronico: "sergio@sergio.es",
-          contrasena: "1234",
-          nombre: "sergio",
-          apellidos: "medina",
-          fechaNacimiento: "1999-01-01",
-          telefono: "644343423",
-          genero: "Masculino",
-          ciudad: "Valladolid",
-          buscandoPiso: true,
-          ocupacion: "Ingeniero",
-          biografia: "qwe",
-          precio: "q1222",
-          descripcionVivienda: "qwe"),*/
-
-      /*home: const PanelAdminPage(
-        idPersona: 1,
-      ),*/
+      home: LeadingPage(),
     );
   }
 }

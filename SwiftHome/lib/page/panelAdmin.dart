@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_users.dart';
 import 'package:swifthome/page/desplazar.dart';
+import 'package:swifthome/page/profile.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
 
@@ -185,8 +186,16 @@ class _PanelAdminPageState extends State<PanelAdminPage> {
                                                                       Icon(Icons
                                                                           .edit),
                                                                       () {
-                                                                        debugPrint(
-                                                                            'Editar usuario ${user['id']}');
+                                                                        // ME FALTA ESTO
+                                                                        Navigator.of(context)
+                                                                            .push(
+                                                                          MaterialPageRoute(
+                                                                            builder: (context) => ProfilePage(
+                                                                                idPersona: user['id'],
+                                                                                buscandoPiso: true,
+                                                                                isAdmin: true),
+                                                                          ),
+                                                                        );
                                                                       },
                                                                     ),
                                                                     IconButtonPersonal(

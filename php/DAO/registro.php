@@ -14,7 +14,8 @@ function setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNaci
 
             $usuarioId = $conexion->lastInsertId();
 
-            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, fecha_nacimiento, telefono, genero, ubicacion, buscandoPiso) VALUES (:usuarioId, :nombre, :apellidos, :fechaNacimiento, :telefono, :genero, :ubicacion, :buscandoPiso)");
+            $resultado = $conexion->prepare("INSERT INTO Perfil (usuarioId, nombre, apellidos, fecha_nacimiento, telefono, genero, ubicacion, buscandoPiso) VALUES (:usuarioId, :nombre, :apellidos, :fechaNacimiento, 
+            :telefono, :genero, :ubicacion, :buscandoPiso)");
             $resultado->bindParam(":usuarioId", $usuarioId);
             $resultado->bindParam(":nombre", $nombre);
             $resultado->bindParam(":apellidos", $apellidos);
@@ -88,7 +89,6 @@ $comprobarUsuario = getUsuarioPorCorreo($correo);
 
 if($comprobarUsuario != null){
     echo json_encode(["status" => 0, "mensaje" => "El correo ya está registrado"]);
-    return;
 }else{
     $usuarioRegistrado = setAniadirUsuario($correo, $contrasena, $nombre, $apellidos, $fechaNacimiento, $telefono, $genero, $ciudad, $buscandoPiso, $ocupacion, $biografia, $precio, $descripcionVivienda);
     if ($usuarioRegistrado) {

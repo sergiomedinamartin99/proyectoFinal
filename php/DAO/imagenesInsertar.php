@@ -1,19 +1,16 @@
 <?php
 require_once "../Conector/conexion.php";
 
-// Función para insertar imágenes en la base de datos
 function insertarImagenes($perfilId, $imagenes)
 {
     try {
         $conexion = getConexion();
         if ($conexion != null) {
-            // Iteramos sobre las imágenes
             foreach ($imagenes['tmp_name'] as $index => $tmpName) {
-                $nombreImagen = $imagenes['name'][$index];  // Nombre de la imagen
-                $tipoImagen = $imagenes['type'][$index];    // Tipo MIME de la imagen
-                $dataImagen = base64_encode(file_get_contents($tmpName));   // Contenido binario de la imagen
+                $nombreImagen = $imagenes['name'][$index];
+                $tipoImagen = $imagenes['type'][$index];
+                $dataImagen = base64_encode(file_get_contents($tmpName));
 
-                // Insertar imagen en la base de datos
                 $resultado = $conexion->prepare("INSERT INTO Imagenes (perfilId, posicionImagen, nombre, tipo, datos) 
                                                  VALUES (:perfilId, :posicionImagen, :nombre, :tipo, :datos)");
                 $resultado->bindParam(":perfilId", $perfilId);

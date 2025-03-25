@@ -29,9 +29,7 @@ function getPerfilUsuario($idUsuario) {
             return $perfilCompleto;
         }
     } catch (Exception $ex) {
-        return 0;
-        error_log("Error al obtener el perfil del usuario: " . $ex->getMessage());
-        exit;
+        return false;
     } finally {
         $conexion = null;
     }

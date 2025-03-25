@@ -14,9 +14,7 @@ function getComprobarUsuario($correo) {
             return $usuario;
         }
     } catch (Exception $ex) {
-        return 0;
-        error_log("Error al comprobar usuario: " . $ex->getMessage());
-        exit;
+        return false;
     } finally {
         $conexion = null;
     }
@@ -31,7 +29,8 @@ $contrasena = $_POST['contrasena'];
 $existeUsuario = getComprobarUsuario($correo);
 if ($existeUsuario) {
     if (password_verify($contrasena, $existeUsuario["contrasena"])) {
-        echo json_encode(["status" => 1, "mensaje" => "Usuario logeado correctamente", "usuarioId" => $existeUsuario["id"], "admin" => $existeUsuario["esAdministrador"] ? true : false, "buscandoPiso" => $existeUsuario["buscandoPiso"] ? true : false]);
+        echo json_encode(["status" => 1, "mensaje" => "Usuario logeado correctamente", "usuarioId" => $existeUsuario["id"], 
+        "admin" => $existeUsuario["esAdministrador"] ? true : false, "buscandoPiso" => $existeUsuario["buscandoPiso"] ? true : false]);
     } else {
         echo json_encode(["status" => 0, "mensaje" => "Error en el correo electrónico y/o en la contraseña"]);
     }

@@ -2,7 +2,8 @@
 
 require_once "../Conector/conexion.php";
 
-function updateUsuario($idUsuario, $nombreUsuario, $apellidosUsuario, $fechaNacimientoUsuario, $telefonoUsuario, $generoUsuario, $ciudadUsuario, $buscandoPisoUsuario, $precioUsuario, $descripcionViviendaUsuario, $ocupacionUsuario, $biografiaUsuario)
+function updateUsuario($idUsuario, $nombreUsuario, $apellidosUsuario, $fechaNacimientoUsuario, $telefonoUsuario, $generoUsuario, $ciudadUsuario, $buscandoPisoUsuario, $precioUsuario, 
+$descripcionViviendaUsuario, $ocupacionUsuario, $biografiaUsuario)
 {
     try {
         $conexion = getConexion();
@@ -42,7 +43,8 @@ $biografiaUsuario = $_POST["biografia"];
 $precioUsuario = $_POST["precio"];
 $descripcionViviendaUsuario = $_POST["descripcionVivienda"];
 
-if (updateUsuario($idUsuario, $nombreUsuario, $apellidosUsuario, $fechaNacimientoUsuario, $telefonoUsuario, $generoUsuario, $ciudadUsuario, $buscandoPisoUsuario, $precioUsuario, $descripcionViviendaUsuario, $ocupacionUsuario, $biografiaUsuario)) {
+if (updateUsuario($idUsuario, $nombreUsuario, $apellidosUsuario, $fechaNacimientoUsuario, $telefonoUsuario, $generoUsuario, $ciudadUsuario, $buscandoPisoUsuario, 
+$precioUsuario, $descripcionViviendaUsuario, $ocupacionUsuario, $biografiaUsuario)) {
     echo json_encode(["status" => 1, "mensaje" => "Usuario actualizado correctamente"]);
 } else {
     echo json_encode(["status" => 0, "mensaje" => "El usuario no se ha podido actualizar"]);

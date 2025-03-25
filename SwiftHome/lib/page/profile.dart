@@ -199,10 +199,14 @@ class _ProfilePagePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    // Elegimos el mayor de los dos porcentajes para que TabBarView tenga una altura fija.
+    final tabViewHeight = screenHeight * 0.78;
+
     return Scaffold(
-      backgroundColor: Color.fromRGBO(243, 244, 246, 1),
+      backgroundColor: const Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
-        preferredSize: Size(20, 50),
+        preferredSize: const Size.fromHeight(50),
         child: AppbarAlreadyRegistered(
           namePage: 'profile',
           idPersona: widget.idPersona,
@@ -212,61 +216,57 @@ class _ProfilePagePageState extends State<ProfilePage> {
       ),
       body: DefaultTabController(
         length: 2,
-        child: LayoutBuilder(builder: (context, constraints) {
-          return SingleChildScrollView(
-            controller: _scrollController,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
+        child: Column(
+          children: [
+            // TARJETA CON TAB BAR Y TAB BAR VIEW
+            Padding(
+              padding: const EdgeInsets.only(left: 50.0, right: 50.0, top: 50),
+              child: Card(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: 32,
-                        bottom: constraints.maxWidth > 1200 ? 0 : 16,
-                        left: MediaQuery.of(context).size.width * 0.1,
-                        right: MediaQuery.of(context).size.width * 0.1,
-                      ),
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          children: [
-                            // TabBar agregado
-                            TabBar(
-                              labelColor: Colors.black,
-                              unselectedLabelColor: Colors.grey,
-                              indicatorColor: Colors.black,
-                              tabs: [
-                                Tab(text: 'Información Personal'),
-                                Tab(text: 'Gestionar Imágenes'),
-                              ],
+                    TabBar(
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.grey,
+                      indicatorColor: Colors.black,
+                      tabs: const [
+                        Tab(text: 'Información Personal'),
+                        Tab(text: 'Gestionar Imágenes'),
+                      ],
+                    ),
+                    // Se define una altura fija para el TabBarView
+                    SizedBox(
+                      height: tabViewHeight,
+                      child: TabBarView(
+                        physics: const BouncingScrollPhysics(),
+                        children: [
+                          // Para _informacionPersonal(), se garantiza un mínimo del 50% de la altura de la pantalla
+                          SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minHeight: screenHeight * 0.7),
+                              child: _informacionPersonal(),
                             ),
-                            Container(
-                              height: 1000,
-                              child: TabBarView(
-                                physics: BouncingScrollPhysics(),
-                                children: [
-                                  _informacionPersonal(),
-                                  _gestionarImagenes()
-                                ],
-                              ),
+                          ),
+                          // Para _gestionarImagenes(), se garantiza un mínimo del 70% de la altura de la pantalla
+                          SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(minHeight: screenHeight * 0.5),
+                              child: _gestionarImagenes(),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    Spacer(),
-                    Footer(),
                   ],
                 ),
               ),
             ),
-          );
-        }),
+            Spacer(),
+            // FOOTER AL FINAL
+            Footer(),
+          ],
+        ),
       ),
     );
   }
@@ -281,7 +281,15 @@ class _ProfilePagePageState extends State<ProfilePage> {
           children: [
             labelForm(title: "Nombre"),
             TextFormField(
-              enabled: false,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Por favor, introduce tu nombre';
+                } else if (RegExp(r'\d').hasMatch(value)) {
+                  return 'El nombre no puede contener números';
+                }
+                return null;
+              },
+              enabled: widget.isAdmin ? true : false,
               controller: _controllerNombre,
               decoration: const InputDecoration(
                 hintText: "Introduce tu nombre...",
@@ -294,6 +302,14 @@ class _ProfilePagePageState extends State<ProfilePage> {
             ),
             labelForm(title: "Apellidos"),
             TextFormField(
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Por favor, introduce tus apellidos';
+                } else if (RegExp(r'\d').hasMatch(value)) {
+                  return 'Los apellidos no pueden contener números';
+                }
+                return null;
+              },
               enabled: widget.isAdmin ? true : false,
               controller: _controllerApellidos,
               decoration: const InputDecoration(
@@ -432,6 +448,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
               alignment: Alignment.centerLeft,
               child: DropdownButtonFormField<bool>(
                 dropdownColor: Colors.white,
+                isExpanded: true,
                 validator: (value) {
                   if (value == null) {
                     return 'Por favor, selecciona el tipo de búsqueda';
@@ -820,7 +837,7 @@ class _ProfilePagePageState extends State<ProfilePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 16.0),
+            padding: const EdgeInsets.only(top: 50.0),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
