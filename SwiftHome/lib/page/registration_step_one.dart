@@ -254,8 +254,7 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                           } else if (validarEmail == "exist") {
                                             showDialog(
                                               context: context,
-                                              barrierDismissible:
-                                                  true, // Permite cerrar el diálogo tocando fuera de él
+                                              barrierDismissible: true,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                   title: Text(
@@ -263,25 +262,23 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                                   content: Text(
                                                       "El correo electrónico ingresado ya está registrado. ¿Deseas ir a la página de login?"),
                                                   actions: <Widget>[
-                                                    // Botón para cerrar el diálogo
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context)
-                                                            .pop(); // Cierra el diálogo
+                                                            .pop();
                                                       },
                                                       child: Text("Cerrar"),
                                                     ),
-                                                    // Botón para navegar a otra página
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context)
-                                                            .pop(); // Cierra el diálogo primero
+                                                            .pop();
                                                         Navigator
                                                             .pushReplacement(
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  LoginPage()), // Navega a la página de login
+                                                                  LoginPage()),
                                                         );
                                                       },
                                                       child: Text("Ir a Login"),
@@ -293,8 +290,7 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                           } else if (validarEmail == "block") {
                                             showDialog(
                                               context: context,
-                                              barrierDismissible:
-                                                  true, // Permite cerrar el diálogo tocando fuera de él
+                                              barrierDismissible: true,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
                                                   title: Text(
@@ -302,11 +298,10 @@ class _RegistrationStepOnePageState extends State<RegistrationStepOnePage> {
                                                   content: Text(
                                                       "El correo electrónico ingresado está bloqueado. Por favor, ponte en contacto con el administrador para apelar la decisión."),
                                                   actions: <Widget>[
-                                                    // Botón para cerrar el diálogo
                                                     TextButton(
                                                       onPressed: () {
                                                         Navigator.of(context)
-                                                            .pop(); // Cierra el diálogo
+                                                            .pop();
                                                       },
                                                       child: Text("Cerrar"),
                                                     ),

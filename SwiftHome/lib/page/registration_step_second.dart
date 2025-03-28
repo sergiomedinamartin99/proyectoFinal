@@ -70,19 +70,18 @@ class _RegistrationStepSecondPageState
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1900),
-      lastDate: DateTime.now(), // Bloquear fechas posteriores a la actual
-      locale: const Locale('es', 'ES'), // Españolizar el calendario
+      lastDate: DateTime.now(),
+      locale: const Locale('es', 'ES'),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.black, // Color de selección
-              onPrimary: Colors.white, // Texto sobre el color de selección
-              surface: Colors.white, // Fondo de los elementos
-              onSurface: Colors.black, // Texto general
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
             ),
-            dialogBackgroundColor:
-                Colors.white, // Fondo blanco del cuadro de diálogo
+            dialogBackgroundColor: Colors.white,
           ),
           child: child!,
         );

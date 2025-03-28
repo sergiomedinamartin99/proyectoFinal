@@ -60,8 +60,4 @@ if (!$comprobarExistenciaBloqueo) {
 } else {
     echo json_encode(["status" => 2, "mensaje" => "Usuario bloqueado."]);
 }
-
-
-
-
 ?>

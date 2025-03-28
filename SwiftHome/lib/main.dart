@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:swifthome/page/leading.dart';
-import 'package:swifthome/page/login.dart';
-import 'package:swifthome/page/panelAdmin.dart';
-import 'package:swifthome/page/home.dart';
-import 'package:swifthome/page/registration_step_third.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +9,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
           inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(), // Define el borde del campo de texto
+            border: OutlineInputBorder(),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide(color: Colors.black, width: 1.0),
@@ -53,9 +48,8 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('es', ''), // Español
+        const Locale('es', ''),
       ],
-      //home: const LoginPage(),
       home: LeadingPage(),
     );
   }

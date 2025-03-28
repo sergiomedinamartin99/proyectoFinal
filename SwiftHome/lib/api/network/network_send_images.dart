@@ -12,18 +12,12 @@ class NetworkEnviarImagenes {
   Future<Map<String, dynamic>?> fetchData() async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
 
-    // Agregar el perfilId
     request.fields['perfilId'] = perfilId.toString();
 
-    // Agregar las imágenes
     for (var imagen in imagenes) {
       if (imagen != null) {
-        // Split por '/' y nos quedamos con la última parte (ej. "png", "jpeg", etc.)
         final String extension = imagen.tipo.split('/').last;
-
-        // Construimos el MediaType
         final contentType = MediaType('image', extension);
-
         final multipartFile = http.MultipartFile.fromBytes(
           'imagenes[]',
           imagen.data,
@@ -35,10 +29,8 @@ class NetworkEnviarImagenes {
       }
     }
 
-    // Enviar la solicitud
     var response = await request.send();
 
-    // Obtener la respuesta
     if (response.statusCode == 200) {
       var responseData = await response.stream.bytesToString();
       return jsonDecode(responseData);

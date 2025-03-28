@@ -421,6 +421,7 @@ class _PersonaCardBuscadorState extends State<PersonaCardBuscador>
   bool isExpanded = false;
   int _currentIndex = 0;
   late PageController _pageController;
+  final GlobalKey _pageViewKey = GlobalKey();
 
   @override
   void initState() {
@@ -501,6 +502,7 @@ class _PersonaCardBuscadorState extends State<PersonaCardBuscador>
       child: Stack(
         children: [
           PageView.builder(
+            key: _pageViewKey,
             controller: _pageController,
             itemCount: widget.personasBuscador.imagenes.length,
             itemBuilder: (context, index) {
@@ -861,6 +863,7 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
   bool isExpanded = false;
   int _currentIndex = 0;
   late PageController _pageController;
+  final GlobalKey _pageViewKey = GlobalKey();
 
   @override
   void initState() {
@@ -941,6 +944,7 @@ class _PersonaCardPropietarioState extends State<PersonaCardPropietario>
       child: Stack(
         children: [
           PageView.builder(
+            key: _pageViewKey,
             controller: _pageController,
             itemCount: widget.personasPropietario.imagenes.length,
             itemBuilder: (context, index) {

@@ -445,9 +445,6 @@ class Imagen {
   Imagen(this.nombre, this.tipo, this.data);
 }
 
-// -------------------------------
-// FUNCIONES DE INSERCIÓN EN BACKEND
-// -------------------------------
 Future<Map<String, dynamic>?> insertarDatosUsuario(
   String nombre,
   String apellidos,

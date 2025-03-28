@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:swifthome/api/constants.dart';
 import 'package:swifthome/api/network/network_users.dart';
-import 'package:swifthome/page/desplazar.dart';
 import 'package:swifthome/page/profile.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
