@@ -131,6 +131,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: const Color.fromRGBO(243, 244, 246, 1),
       appBar: PreferredSize(
@@ -181,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                             : Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  RoomSwipeHeader(),
+                                  if (screenHeight > 700) RoomSwipeHeader(),
                                   cardPadre(),
                                   // BOTONES HAY QUE VERLO
                                   Padding(

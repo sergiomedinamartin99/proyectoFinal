@@ -90,9 +90,9 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
           WebUiSettings(
             context: context,
             presentStyle: WebPresentStyle.dialog,
-            size: const CropperSize(
+            size: CropperSize(
               width: 500,
-              height: 500,
+              height: MediaQuery.of(context).size.height <= 1200 ? 300 : 500,
             ),
             cropBoxResizable:
                 false, // No permite redimensionar el área de recorte

@@ -175,9 +175,9 @@ class _ProfilePagePageState extends State<ProfilePage> {
           WebUiSettings(
             context: context,
             presentStyle: WebPresentStyle.dialog,
-            size: const CropperSize(
+            size: CropperSize(
               width: 500,
-              height: 500,
+              height: MediaQuery.of(context).size.height <= 1200 ? 300 : 500,
             ),
             cropBoxResizable:
                 false, // No permite redimensionar el área de recorte
@@ -272,54 +272,63 @@ class _ProfilePagePageState extends State<ProfilePage> {
       body: DefaultTabController(
         length: 2,
         child: Column(
+          // Columna Principal
           children: [
             // TARJETA CON TAB BAR Y TAB BAR VIEW
-            Padding(
-              padding: const EdgeInsets.only(left: 50.0, right: 50.0, top: 50),
-              child: Card(
-                child: Column(
-                  children: [
-                    TabBar(
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: Colors.black,
-                      tabs: const [
-                        Tab(text: 'Información Personal'),
-                        Tab(text: 'Gestionar Imágenes'),
-                      ],
-                    ),
-                    // Se define una altura fija para el TabBarView
-                    SizedBox(
-                      height: tabViewHeight,
-                      child: TabBarView(
-                        physics: const BouncingScrollPhysics(),
-                        children: [
-                          // Para _informacionPersonal(), se garantiza un mínimo del 50% de la altura de la pantalla
-                          SingleChildScrollView(
-                            child: ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(minHeight: screenHeight * 0.7),
-                              child: _informacionPersonal(),
-                            ),
-                          ),
-                          // Para _gestionarImagenes(), se garantiza un mínimo del 70% de la altura de la pantalla
-                          SingleChildScrollView(
-                            child: ConstrainedBox(
-                              constraints:
-                                  BoxConstraints(minHeight: screenHeight * 0.5),
-                              child: _gestionarImagenes(),
-                            ),
-                          ),
+            // Haz que esta sección (Padding + Card) se expanda
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 50.0, right: 50.0, top: 50),
+                child: Card(
+                  // Es importante que la Card no fuerce una altura intrínseca grande
+                  // Si Card tiene padding interno, está bien.
+                  child: Column(
+                    // Columna dentro de la Card
+                    // crossAxisAlignment: CrossAxisAlignment.stretch, // Opcional
+                    children: [
+                      TabBar(
+                        labelColor: Colors.black,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.black,
+                        tabs: const [
+                          Tab(text: 'Información Personal'),
+                          Tab(text: 'Gestionar Imágenes'),
                         ],
                       ),
-                    ),
-                  ],
+                      // Haz que el TabBarView ocupe el espacio restante DENTRO de la Card
+                      Expanded(
+                        child: TabBarView(
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            // El SingleChildScrollView permite scroll si el contenido es más grande
+                            // que el espacio que le da el Expanded.
+                            // El ConstrainedBox con minHeight puede ser problemático aquí.
+                            // Considera quitarlo a menos que sea estrictamente necesario
+                            // asegurar un tamaño mínimo visual incluso con poco contenido.
+                            SingleChildScrollView(
+                              // Opcional: Añade padding interno si es necesario
+                              // padding: const EdgeInsets.all(16.0),
+                              child:
+                                  _informacionPersonal(), // Tu widget de contenido
+                            ),
+                            SingleChildScrollView(
+                              // padding: const EdgeInsets.all(16.0), // Opcional
+                              child:
+                                  _gestionarImagenes(), // Tu widget de contenido
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Spacer(),
+            // Ya no necesitas Spacer, Expanded se encarga de llenar el espacio
+            // Spacer(),
             // FOOTER AL FINAL
-            Footer(),
+            Footer(), // Footer se coloca después del contenido expandido
           ],
         ),
       ),

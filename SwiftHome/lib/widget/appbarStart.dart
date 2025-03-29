@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:swifthome/page/leading.dart';
-import 'package:swifthome/page/login.dart';
 
 class AppbarStart extends StatelessWidget {
   final String page;
@@ -11,13 +10,15 @@ class AppbarStart extends StatelessWidget {
       automaticallyImplyLeading: false,
       leading: null,
       title: TextButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => LeadingPage(),
-            ),
-          );
-        },
+        onPressed: (page != "leading")
+            ? () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => LeadingPage(),
+                  ),
+                );
+              }
+            : null,
         child: Text(
           'RoomSwipe',
           style: TextStyle(

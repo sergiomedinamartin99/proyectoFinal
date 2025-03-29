@@ -86,7 +86,7 @@ class _LeadingPageState extends State<LeadingPage> {
                                     vertical: 20,
                                   ),
                                 ),
-                                child: Text("Registrare"),
+                                child: Text("Registrarse"),
                               ),
                             ),
                             ConstrainedBox(
