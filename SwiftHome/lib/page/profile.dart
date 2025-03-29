@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:swifthome/api/constants.dart';
@@ -11,6 +12,7 @@ import 'package:swifthome/page/registration_step_third.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
 import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/labelForm.dart';
+import 'package:image/image.dart' as img;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage(
@@ -146,40 +148,93 @@ class _ProfilePagePageState extends State<ProfilePage> {
     final ImagePicker selector = ImagePicker();
     final XFile? imagenSeleccionada =
         await selector.pickImage(source: ImageSource.gallery);
+
     if (imagenSeleccionada != null) {
-      // Extraer el nombre del archivo e información del tipo
-      final String nombreImagen =
-          imagenSeleccionada.name.split('.')[0]; // Nombre de la imagen
-      String tipoMime = '';
-      String extensionImagen = '';
-      if (imagenSeleccionada.mimeType != null) {
-        tipoMime = imagenSeleccionada.mimeType!.split('/').last;
-        extensionImagen = imagenSeleccionada.mimeType!;
+      // === PASO 1: Abrimos el cropper para recortar/forzar dimensiones ===
+      final CroppedFile? imagenRecortada = await ImageCropper().cropImage(
+        sourcePath: imagenSeleccionada.path,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 100,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Recortar imagen',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            activeControlsWidgetColor:
+                Colors.black, // Cambia los controles activos
+            cropFrameColor: Colors.black, // Color del marco
+            cropGridColor: Colors.black, // Color de la cuadrícula
+            backgroundColor: Colors.black, // Fondo negro
+            dimmedLayerColor: Colors.black, // Capa oscura
+          ),
+          IOSUiSettings(
+            title: 'Recortar imagen',
+            aspectRatioLockEnabled: true, // Bloquea la relación de aspecto
+            aspectRatioPickerButtonHidden: true,
+          ),
+          WebUiSettings(
+            context: context,
+            presentStyle: WebPresentStyle.dialog,
+            size: const CropperSize(
+              width: 500,
+              height: 500,
+            ),
+            cropBoxResizable:
+                false, // No permite redimensionar el área de recorte
+            dragMode: WebDragMode.move,
+            translations: WebTranslations(
+              title: "Ajustar imagen",
+              rotateLeftTooltip: "Rotar izquierda",
+              rotateRightTooltip: "Rotar derecha",
+              cancelButton: "Cancelar",
+              cropButton: "Recortar",
+            ),
+            themeData: WebThemeData(
+              rotateIconColor: Colors.black,
+            ),
+          ),
+        ],
+        aspectRatio:
+            const CropAspectRatio(ratioX: 5, ratioY: 7), // Relación 5:7
+      );
+
+      // === PASO 2: Si el recorte no se canceló, redimensionamos a 500x700 ===
+      if (imagenRecortada != null) {
+        final Uint8List bytesImagen = await imagenRecortada.readAsBytes();
+        final img.Image? imagenOriginal = img.decodeImage(bytesImagen);
+
+        if (imagenOriginal != null) {
+          // Redimensionamos la imagen a 500x700
+          final img.Image imagenRedimensionada =
+              img.copyResize(imagenOriginal, width: 500, height: 700);
+
+          // Convertimos la imagen redimensionada a bytes
+          final Uint8List bytesRedimensionados =
+              Uint8List.fromList(img.encodeJpg(imagenRedimensionada));
+
+          // Extraemos nombre y tipo MIME
+          final String nombreImagen =
+              imagenSeleccionada.name.split('.')[0]; // nombre base
+          String tipoMime =
+              imagenSeleccionada.mimeType?.split('/').last ?? 'jpg';
+
+          // Actualizamos el estado
+          setState(() {
+            int primerIndiceNulo =
+                _imagenes.indexWhere((imagen) => imagen == null);
+            if (primerIndiceNulo != -1) {
+              indice = primerIndiceNulo;
+            }
+            if (_imagenes[indice] == null) {
+              _imagenes[indice] = Imagen('', '', Uint8List(0));
+            }
+            _imagenes[indice]!.data = bytesRedimensionados;
+            _imagenes[indice]!.nombre = nombreImagen;
+            _imagenes[indice]!.tipo = tipoMime;
+          });
+        }
       } else {
-        tipoMime = 'Desconocido';
-      }
-      if (extensionImagen != '' && extensionImagen.startsWith('image/')) {
-        final Uint8List bytesImagen = await imagenSeleccionada.readAsBytes();
-        setState(() {
-          // Buscar la primera posición nula
-          int primerIndiceNulo =
-              _imagenes.indexWhere((imagen) => imagen == null);
-          if (primerIndiceNulo != -1) {
-            indice = primerIndiceNulo;
-          }
-          if (_imagenes[indice] == null) {
-            _imagenes[indice] = Imagen('', '', Uint8List(0));
-          }
-          _imagenes[indice]!.data = bytesImagen;
-          _imagenes[indice]!.nombre = nombreImagen;
-          _imagenes[indice]!.tipo = tipoMime;
-        });
-      } else {
-        setState(() {
-          showValidationText = true;
-          validationMessage = "Por favor, selecciona un archivo de imagen.";
-        });
-        return;
+        debugPrint("Recorte cancelado por el usuario");
       }
     }
   }

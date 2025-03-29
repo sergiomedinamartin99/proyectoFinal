@@ -57,12 +57,8 @@ class _RegistrationStepThirdPageState extends State<RegistrationStepThirdPage> {
   bool showValidationText = false;
   String validationMessage = "";
 
-  // Lista de 9 imágenes (cada posición puede ser null si no hay imagen).
   final List<Imagen?> _imagenes = List.filled(9, null);
 
-  // ---------------
-  // FUNCIÓN MODIFICADA
-  // ---------------
   Future<void> _seleccionarImagen(int indice) async {
     final ImagePicker selector = ImagePicker();
     final XFile? imagenSeleccionada =

@@ -27,22 +27,6 @@ class AppbarStart extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.black,
-      actions: [
-        if (page != "leading")
-          IconButton(
-            icon: const Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => LoginPage(),
-                ),
-              );
-            },
-          ),
-      ],
     );
   }
 }
