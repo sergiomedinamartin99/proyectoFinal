@@ -8,6 +8,7 @@ import 'package:swifthome/api/network/network_insert_data.dart';
 import 'package:swifthome/api/network/network_profile.dart';
 import 'package:swifthome/page/registration_step_third.dart';
 import 'package:swifthome/widget/appbar_already_registered.dart';
+import 'package:swifthome/widget/footer.dart';
 import 'package:swifthome/widget/roomswipeheader.dart';
 
 class HomePage extends StatefulWidget {
@@ -142,218 +143,238 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: SafeArea(
-        child: Center(
-            child: !checkUploadedData
-                ? Column(
-                    children: [
-                      Icon(
-                        Icons.error,
-                        size: 100,
-                        color: Colors.black,
-                      ),
-                      Text(
-                        'Error al cargar datos',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  )
-                : widget.buscandoPiso
-                    ? listPersonasPropietario.isEmpty || noMoreCards
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.hourglass_empty,
-                                size: 100,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Ya no quedan mas perfiles en tu area",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              RoomSwipeHeader(),
-                              cardPadre(),
-                              // BOTONES HAY QUE VERLO
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.red),
-                                      onPressed: () => controller
-                                          .swipe(CardSwiperDirection.left),
-                                      hoverColor: Colors.red.shade100,
-                                      splashRadius: 28,
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                                (states) => Colors.transparent),
-                                        shape: MaterialStateProperty
-                                            .resolveWith<OutlinedBorder>(
-                                          (states) => const CircleBorder(
-                                            side: BorderSide(
-                                              color: Colors.red,
-                                              width: 2.0,
+        child: Column(
+          children: [
+            Expanded(
+              child: Center(
+                child: !checkUploadedData
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error,
+                            size: 100,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            'Error al cargar datos',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ],
+                      )
+                    : widget.buscandoPiso
+                        ? listPersonasPropietario.isEmpty || noMoreCards
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.hourglass_empty,
+                                    size: 100,
+                                    color: Colors.black,
+                                  ),
+                                  Text(
+                                    "Ya no quedan mas perfiles en tu area",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RoomSwipeHeader(),
+                                  cardPadre(),
+                                  // BOTONES HAY QUE VERLO
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.close,
+                                              color: Colors.red),
+                                          onPressed: () => controller
+                                              .swipe(CardSwiperDirection.left),
+                                          hoverColor: Colors.red.shade100,
+                                          splashRadius: 28,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty
+                                                    .resolveWith<Color?>(
+                                                        (states) =>
+                                                            Colors.transparent),
+                                            shape: MaterialStateProperty
+                                                .resolveWith<OutlinedBorder>(
+                                              (states) => const CircleBorder(
+                                                side: BorderSide(
+                                                  color: Colors.red,
+                                                  width: 2.0,
+                                                ),
+                                              ),
                                             ),
+                                            overlayColor: MaterialStateProperty
+                                                .resolveWith<Color?>((states) {
+                                              if (states.contains(
+                                                  MaterialState.hovered)) {
+                                                return Colors.red.shade100;
+                                              }
+                                              return null;
+                                            }),
                                           ),
                                         ),
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color?>((states) {
-                                          if (states.contains(
-                                              MaterialState.hovered)) {
-                                            return Colors.red.shade100;
-                                          }
-                                          return null;
-                                        }),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 32),
-                                    IconButton(
-                                      icon: const Icon(Icons.favorite_border,
-                                          color: Colors.green),
-                                      onPressed: () {
-                                        controller
-                                            .swipe(CardSwiperDirection.right);
-
-                                        print("El valor de $indexCurrent");
-                                      },
-                                      hoverColor: Colors.green.shade100,
-                                      splashRadius: 28,
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                                (states) => Colors.transparent),
-                                        shape: MaterialStateProperty
-                                            .resolveWith<OutlinedBorder>(
-                                          (states) => const CircleBorder(
-                                            side: BorderSide(
-                                              color: Colors.green,
-                                              width: 2.0,
+                                        const SizedBox(width: 32),
+                                        IconButton(
+                                          icon: const Icon(
+                                              Icons.favorite_border,
+                                              color: Colors.green),
+                                          onPressed: () {
+                                            controller.swipe(
+                                                CardSwiperDirection.right);
+                                            print("El valor de $indexCurrent");
+                                          },
+                                          hoverColor: Colors.green.shade100,
+                                          splashRadius: 28,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty
+                                                    .resolveWith<Color?>(
+                                                        (states) =>
+                                                            Colors.transparent),
+                                            shape: MaterialStateProperty
+                                                .resolveWith<OutlinedBorder>(
+                                              (states) => const CircleBorder(
+                                                side: BorderSide(
+                                                  color: Colors.green,
+                                                  width: 2.0,
+                                                ),
+                                              ),
                                             ),
+                                            overlayColor: MaterialStateProperty
+                                                .resolveWith<Color?>((states) {
+                                              if (states.contains(
+                                                  MaterialState.hovered)) {
+                                                return Colors.green.shade100;
+                                              }
+                                              return null;
+                                            }),
                                           ),
                                         ),
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color?>((states) {
-                                          if (states.contains(
-                                              MaterialState.hovered)) {
-                                            return Colors.green.shade100;
-                                          }
-                                          return null;
-                                        }),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )
-                    : listPersonasBuscador.isEmpty || noMoreCards
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.hourglass_empty,
-                                size: 100,
-                                color: Colors.black,
-                              ),
-                              Text(
-                                "Ya no quedan mas perfiles en tu area",
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "RoomSwipe: Encuentra tu compañero ideal",
-                                style: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold),
-                              ),
-                              cardPadre(),
-                              // BOTONES HAY QUE VERLO
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.red),
-                                      onPressed: () => controller
-                                          .swipe(CardSwiperDirection.left),
-                                      hoverColor: Colors.red.shade100,
-                                      splashRadius: 28,
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                                (states) => Colors.transparent),
-                                        shape: MaterialStateProperty
-                                            .resolveWith<OutlinedBorder>(
-                                          (states) => const CircleBorder(
-                                            side: BorderSide(
-                                              color: Colors.red,
-                                              width: 2.0,
+                                  ),
+                                ],
+                              )
+                        : listPersonasBuscador.isEmpty || noMoreCards
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.hourglass_empty,
+                                    size: 100,
+                                    color: Colors.black,
+                                  ),
+                                  Text(
+                                    "Ya no quedan mas perfiles en tu area",
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "RoomSwipe: Encuentra tu compañero ideal",
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  cardPadre(),
+                                  // BOTONES HAY QUE VERLO
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.close,
+                                              color: Colors.red),
+                                          onPressed: () => controller
+                                              .swipe(CardSwiperDirection.left),
+                                          hoverColor: Colors.red.shade100,
+                                          splashRadius: 28,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty
+                                                    .resolveWith<Color?>(
+                                                        (states) =>
+                                                            Colors.transparent),
+                                            shape: MaterialStateProperty
+                                                .resolveWith<OutlinedBorder>(
+                                              (states) => const CircleBorder(
+                                                side: BorderSide(
+                                                  color: Colors.red,
+                                                  width: 2.0,
+                                                ),
+                                              ),
                                             ),
+                                            overlayColor: MaterialStateProperty
+                                                .resolveWith<Color?>((states) {
+                                              if (states.contains(
+                                                  MaterialState.hovered)) {
+                                                return Colors.red.shade100;
+                                              }
+                                              return null;
+                                            }),
                                           ),
                                         ),
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color?>((states) {
-                                          if (states.contains(
-                                              MaterialState.hovered)) {
-                                            return Colors.red.shade100;
-                                          }
-                                          return null;
-                                        }),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 32),
-                                    IconButton(
-                                      icon: const Icon(Icons.favorite_border,
-                                          color: Colors.green),
-                                      onPressed: () {
-                                        controller
-                                            .swipe(CardSwiperDirection.right);
-
-                                        print("El valor de $indexCurrent");
-                                      },
-                                      hoverColor: Colors.green.shade100,
-                                      splashRadius: 28,
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color?>(
-                                                (states) => Colors.transparent),
-                                        shape: MaterialStateProperty
-                                            .resolveWith<OutlinedBorder>(
-                                          (states) => const CircleBorder(
-                                            side: BorderSide(
-                                              color: Colors.green,
-                                              width: 2.0,
+                                        const SizedBox(width: 32),
+                                        IconButton(
+                                          icon: const Icon(
+                                              Icons.favorite_border,
+                                              color: Colors.green),
+                                          onPressed: () {
+                                            controller.swipe(
+                                                CardSwiperDirection.right);
+                                            print("El valor de $indexCurrent");
+                                          },
+                                          hoverColor: Colors.green.shade100,
+                                          splashRadius: 28,
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty
+                                                    .resolveWith<Color?>(
+                                                        (states) =>
+                                                            Colors.transparent),
+                                            shape: MaterialStateProperty
+                                                .resolveWith<OutlinedBorder>(
+                                              (states) => const CircleBorder(
+                                                side: BorderSide(
+                                                  color: Colors.green,
+                                                  width: 2.0,
+                                                ),
+                                              ),
                                             ),
+                                            overlayColor: MaterialStateProperty
+                                                .resolveWith<Color?>((states) {
+                                              if (states.contains(
+                                                  MaterialState.hovered)) {
+                                                return Colors.green.shade100;
+                                              }
+                                              return null;
+                                            }),
                                           ),
                                         ),
-                                        overlayColor: MaterialStateProperty
-                                            .resolveWith<Color?>((states) {
-                                          if (states.contains(
-                                              MaterialState.hovered)) {
-                                            return Colors.green.shade100;
-                                          }
-                                          return null;
-                                        }),
-                                      ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          )),
+              ),
+            ),
+            Footer(),
+          ],
+        ),
       ),
     );
   }

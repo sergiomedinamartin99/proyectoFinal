@@ -17,27 +17,22 @@ class AppbarAlreadyRegistered extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: true,
-      leading: (Navigator.of(context).canPop())
-          ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          : null,
+      automaticallyImplyLeading: false,
+      leading: null,
       title: TextButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomePage(
-                idPersona: idPersona,
-                buscandoPiso: buscandoPiso,
-                isAdmin: isAdmin,
-              ),
-            ),
-          );
-        },
+        onPressed: (!isAdmin && namePage != 'home')
+            ? () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(
+                      idPersona: idPersona,
+                      buscandoPiso: buscandoPiso,
+                      isAdmin: isAdmin,
+                    ),
+                  ),
+                );
+              }
+            : null,
         child: Text(
           'RoomSwipe',
           style: TextStyle(
@@ -73,11 +68,15 @@ class AppbarAlreadyRegistered extends StatelessWidget {
               Icons.chat,
               color: Colors.white,
             ),
-            onPressed: namePage != 'admin'
+            onPressed: namePage != 'chat'
                 ? () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => ChatListPage(),
+                        builder: (context) => ChatListPage(
+                          idPersona: idPersona,
+                          buscandoPiso: buscandoPiso,
+                          isAdmin: isAdmin,
+                        ),
                       ),
                     );
                   }

@@ -8,15 +8,8 @@ class AppbarStart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: true,
-      leading: (Navigator.of(context).canPop())
-          ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          : null,
+      automaticallyImplyLeading: false,
+      leading: null,
       title: TextButton(
         onPressed: () {
           Navigator.of(context).pushReplacement(
